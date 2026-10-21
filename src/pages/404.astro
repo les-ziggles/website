@@ -1,8 +1,9 @@
 ---
-// Not-found page. One file serves every URL (CloudFront error document), so it speaks both languages.
+// Not-found page. The host serves this one file for every unknown URL, so it speaks both languages.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ButtonLink from '../components/content/ButtonLink.astro';
 import { useTranslations } from '../i18n/ui';
+import { pathFor } from '../i18n/routes';
 
 const fr = useTranslations('fr');
 const en = useTranslations('en');
@@ -14,12 +15,12 @@ const en = useTranslations('en');
     <section class="not-found__message">
       <h1>{fr('notFound.title')}</h1>
       <p>{fr('notFound.text')}</p>
-      <ButtonLink href="/">{fr('notFound.back')}</ButtonLink>
+      <ButtonLink href={pathFor('home', 'fr')}>{fr('notFound.back')}</ButtonLink>
     </section>
     <section class="not-found__message" lang="en-GB">
       <h2>{en('notFound.title')}</h2>
       <p>{en('notFound.text')}</p>
-      <ButtonLink href="/en/" variant="secondary">{en('notFound.back')}</ButtonLink>
+      <ButtonLink href={pathFor('home', 'en')} variant="secondary">{en('notFound.back')}</ButtonLink>
     </section>
   </div>
 </BaseLayout>

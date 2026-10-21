@@ -1,8 +1,11 @@
 // Club-wide facts used across pages, structured data and metadata.
 // Update here first: nothing below is duplicated elsewhere in the code.
 
+import { DEPLOY } from './deploy.config';
+
 export const SITE = {
-  url: 'https://ziggles.fr',
+  /** Origin of the published site (see src/deploy.config.ts). */
+  url: DEPLOY.siteUrl,
   name: 'Les Ziggles',
   legalName: 'Les Ziggles – Ultimate & Disc Golf Club Antibes',
   foundingYear: 2003,

@@ -9,6 +9,7 @@ import SiteHeader from '../components/site/SiteHeader.astro';
 import { LOCALE_META, type Locale } from '../i18n/locales';
 import type { RouteKey } from '../i18n/routes';
 import { SITE } from '../site.config';
+import { withBase } from '../deploy.config';
 import { organization, website } from '../lib/structured-data';
 import '../styles/global.css';
 
@@ -35,10 +36,10 @@ const { locale, routeKey, title, description, socialImage, structuredData = [], 
     <Font cssVariable="--font-body" preload />
     <Font cssVariable="--font-display" />
     <SeoHead locale={locale} routeKey={routeKey} title={title} description={description} image={socialImage} noindex={noindex} />
-    <link rel="icon" href="/favicon.ico" sizes="48x48" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="icon" href={withBase('/favicon.ico')} sizes="48x48" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
+    <link rel="manifest" href={withBase('/site.webmanifest')} />
     <meta name="theme-color" content={SITE.themeColor} />
     <meta name="format-detection" content="telephone=no" />
     <StructuredData nodes={[organization(locale), website(), ...structuredData]} />

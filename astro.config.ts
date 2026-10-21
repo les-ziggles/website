@@ -2,13 +2,19 @@ import { defineConfig, fontProviders } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import { SITE } from './src/site.config';
+import { DEPLOY } from './src/deploy.config';
+import { satteri } from '@astrojs/markdown-satteri';
+import { basePathLinks } from './src/lib/markdown-base-path';
 import { DEFAULT_LOCALE, LOCALES, LOCALE_META } from './src/i18n/locales';
 import { pathFor, routeForPath } from './src/i18n/routes';
 
 // https://docs.astro.build/en/reference/configuration-reference/
 export default defineConfig({
+  // Production: https://ziggles.fr at the root. GitHub Pages preview: https://les-ziggles.github.io/website/.
+  // Both come from src/deploy.config.ts (environment variables at build time).
   site: SITE.url,
-  // Static files on S3 + CloudFront: /entrainements/ is served from /entrainements/index.html.
+  base: DEPLOY.basePath || '/',
+  // Static files: /entrainements/ is served from /entrainements/index.html.
   trailingSlash: 'always',
   build: { format: 'directory' },
 
@@ -34,8 +40,12 @@ export default defineConfig({
 
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },
 
-  // No code blocks on the site; Shiki's inline styles would also conflict with the CSP.
-  markdown: { syntaxHighlight: false },
+  markdown: {
+    // No code blocks on the site; Shiki's inline styles would also conflict with the CSP.
+    syntaxHighlight: false,
+    // Root-relative links in page content get the base path (MDX pages use this processor too).
+    processor: satteri({ hastPlugins: [basePathLinks] }),
+  },
 
   // Fonts are downloaded at build time and served from the site itself (no third-party font requests).
   fonts: [
@@ -73,7 +83,8 @@ export default defineConfig({
   ],
 
   // Content Security Policy, rendered as a <meta> tag in every page. Astro adds hashes for its own
-  // scripts and styles. frame-ancestors cannot be set in a <meta> tag: send it as a CloudFront header.
+  // scripts and styles. frame-ancestors cannot be set in a <meta> tag: send it as an HTTP header
+  // when the host allows custom headers (GitHub Pages does not).
   security: {
     csp: {
       directives: [

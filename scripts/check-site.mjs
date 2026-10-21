@@ -3,13 +3,22 @@
 //
 //   bun run build && bun run check:site
 //
+// Uses the same SITE_URL and BASE_PATH environment variables as the build (src/deploy.config.ts).
+//
 // Fails (exit code 1) on errors; prints warnings without failing.
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const DIST = fileURLToPath(new URL('../dist/', import.meta.url));
-const SITE = 'https://ziggles.fr';
+const SITE = (process.env.SITE_URL ?? 'https://ziggles.fr').replace(/\/+$/, '');
+const BASE = `/${(process.env.BASE_PATH ?? '').replace(/^\/+|\/+$/g, '')}`.replace(/\/$/, '');
+/** Root-relative path inside the build: drops the origin and the base path. */
+const local = (url) => {
+  let path = url.startsWith(SITE) ? url.slice(SITE.length) : url;
+  if (BASE && (path === BASE || path.startsWith(`${BASE}/`))) path = path.slice(BASE.length) || '/';
+  return path;
+};
 const errors = [];
 const warnings = [];
 
@@ -23,8 +32,8 @@ const meta = (html, key, value) => tags(html, 'meta').find((t) => attr(t, key) =
 const decode = (text) => text.replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"');
 
 /** Does a root-relative URL resolve to a built file? */
-function resolves(path) {
-  const clean = decodeURIComponent(path.split(/[?#]/)[0]);
+function resolves(url) {
+  const clean = decodeURIComponent(local(url).split(/[?#]/)[0]);
   if (clean.endsWith('/')) return existsSync(join(DIST, clean, 'index.html'));
   return existsSync(join(DIST, clean));
 }
@@ -65,7 +74,7 @@ for (const file of htmlFiles) {
     .filter((t) => attr(t, 'rel') === 'alternate' && attr(t, 'hreflang'))
     .map((t) => ({ hreflang: attr(t, 'hreflang'), href: attr(t, 'href') }));
   if (!isNotFound) {
-    if (canonical !== SITE + path) report(errors, `canonical is ${canonical}, expected ${SITE + path}`);
+    if (canonical !== SITE + BASE + path) report(errors, `canonical is ${canonical}, expected ${SITE + BASE + path}`);
     if (!alternates.some((a) => a.hreflang === 'x-default')) report(errors, 'missing hreflang x-default');
     if (!alternates.some((a) => a.href === canonical)) report(errors, 'hreflang alternates do not include the page itself');
   }
@@ -76,7 +85,7 @@ for (const file of htmlFiles) {
   }
   if (!meta(html, 'name', 'twitter:card')) report(errors, 'missing twitter:card');
   const ogImage = attr(meta(html, 'property', 'og:image') ?? '', 'content');
-  if (ogImage && (!ogImage.startsWith(SITE) || !resolves(ogImage.slice(SITE.length)))) report(errors, `og:image does not resolve: ${ogImage}`);
+  if (ogImage && (!ogImage.startsWith(SITE) || !resolves(ogImage))) report(errors, `og:image does not resolve: ${ogImage}`);
 
   // Structured data
   for (const block of html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
@@ -98,12 +107,14 @@ for (const file of htmlFiles) {
     if (!/\salt(="[^"]*")?[\s>/]/.test(img)) report(errors, `<img> without alt: ${attr(img, 'src')}`);
     const src = attr(img, 'src');
     if (src?.startsWith('/') && !resolves(src)) report(errors, `image not found: ${src}`);
+    if (src?.startsWith('/') && BASE && !src.startsWith(`${BASE}/`)) report(errors, `image misses the base path ${BASE}: ${src}`);
   }
 
   // Links
   for (const a of tags(html, 'a')) {
     const href = attr(a, 'href');
     if (!href) report(errors, '<a> without href');
+    else if (href.startsWith('/') && BASE && !href.startsWith(`${BASE}/`)) report(errors, `link misses the base path ${BASE}: ${href}`);
     else if (href.startsWith('/') && !resolves(href)) report(errors, `broken internal link: ${href}`);
     else if (href.startsWith(SITE)) report(warnings, `absolute link to own site: ${href}`);
   }
@@ -122,7 +133,7 @@ for (const file of htmlFiles) {
 for (const [path, page] of pages) {
   if (page.isNotFound) continue;
   for (const { hreflang, href } of page.alternates) {
-    const target = pages.get(href.slice(SITE.length));
+    const target = pages.get(local(href));
     if (!target) errors.push(`${path}: hreflang ${hreflang} points to a missing page ${href}`);
     else if (!target.alternates.some((a) => a.href === page.canonical)) errors.push(`${path}: ${href} does not link back (hreflang)`);
   }
@@ -131,7 +142,7 @@ for (const [path, page] of pages) {
 // Sitemap, robots.txt and llms.txt
 const sitemap = existsSync(join(DIST, 'sitemap-0.xml')) ? readFileSync(join(DIST, 'sitemap-0.xml'), 'utf8') : '';
 for (const [path, page] of pages) {
-  if (!page.isNotFound && !sitemap.includes(`<loc>${SITE}${path}</loc>`)) errors.push(`sitemap is missing ${path}`);
+  if (!page.isNotFound && !sitemap.includes(`<loc>${SITE}${BASE}${path}</loc>`)) errors.push(`sitemap is missing ${path}`);
 }
 if (sitemap.includes('404')) errors.push('sitemap lists the 404 page');
 for (const file of ['robots.txt', 'llms.txt', 'sitemap-index.xml', 'favicon.ico', 'favicon.svg', 'apple-touch-icon.png', 'site.webmanifest', 'social-card.jpg']) {

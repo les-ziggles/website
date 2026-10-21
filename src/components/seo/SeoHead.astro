@@ -6,7 +6,8 @@ import { SITE } from '../../site.config';
 import { LOCALES, LOCALE_META, type Locale } from '../../i18n/locales';
 import type { RouteKey } from '../../i18n/routes';
 import { useTranslations } from '../../i18n/ui';
-import { absoluteUrl, alternateLinks, canonicalUrl } from '../../lib/urls';
+import { absoluteUrl, alternateLinks, canonicalUrl, publicUrl } from '../../lib/urls';
+import { DEPLOY, withBase } from '../../deploy.config';
 
 interface Props {
   locale: Locale;
@@ -33,16 +34,16 @@ const social = image
       alt: image.alt,
       type: 'image/jpeg',
     }))
-  : { url: absoluteUrl('/social-card.jpg'), width: 1200, height: 630, alt: t('site.socialCardAlt'), type: 'image/jpeg' };
+  : { url: publicUrl('/social-card.jpg'), width: 1200, height: 630, alt: t('site.socialCardAlt'), type: 'image/jpeg' };
 ---
 
 <title>{title}</title>
 <meta name="description" content={description} />
-{noindex ? <meta name="robots" content="noindex, follow" /> : <meta name="robots" content="index, follow, max-image-preview:large" />}
+{noindex || !DEPLOY.indexable ? <meta name="robots" content="noindex, follow" /> : <meta name="robots" content="index, follow, max-image-preview:large" />}
 {canonical && <link rel="canonical" href={canonical} />}
 {alternates.map(({ hreflang, href }) => <link rel="alternate" hreflang={hreflang} href={href} />)}
-<link rel="sitemap" href="/sitemap-index.xml" />
-<link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt" />
+<link rel="sitemap" href={withBase('/sitemap-index.xml')} />
+<link rel="alternate" type="text/plain" title="llms.txt" href={withBase('/llms.txt')} />
 
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content={SITE.name} />

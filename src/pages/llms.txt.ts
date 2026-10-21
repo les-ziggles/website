@@ -4,7 +4,7 @@ import { getCollection, getEntry } from 'astro:content';
 import { SITE } from '../site.config';
 import { LOCALES, LOCALE_META } from '../i18n/locales';
 import { getPagesFor, parsePageId } from '../lib/pages';
-import { canonicalUrl } from '../lib/urls';
+import { canonicalUrl, publicUrl } from '../lib/urls';
 import { capitalize, formatTime, weekdayName } from '../lib/format';
 
 export const GET: APIRoute = async () => {
@@ -36,6 +36,6 @@ export const GET: APIRoute = async () => {
     lines.push(`- ${discipline}, ${data.title.en} (${data.audience.en}): ${capitalize(weekdayName(data.weekday, 'en'))} ${time}, ${venue?.data.name}, ${venue?.data.city}`);
   }
 
-  lines.push('', '## Optional', '', `- [Sitemap](${SITE.url}/sitemap-index.xml)`, '');
+  lines.push('', '## Optional', '', `- [Sitemap](${publicUrl('/sitemap-index.xml')})`, '');
   return new Response(lines.join('\n'), { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 };

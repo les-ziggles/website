@@ -8,6 +8,7 @@
 // Used by the page routes, the language switcher, hreflang links and the sitemap.
 
 import { DEFAULT_LOCALE, LOCALES, type Locale } from './locales';
+import { withBase } from '../deploy.config';
 
 export const ROUTES = {
   home: { fr: '', en: '' },
@@ -25,11 +26,11 @@ export const ROUTE_KEYS = Object.keys(ROUTES) as RouteKey[];
 
 export const isRouteKey = (value: string): value is RouteKey => value in ROUTES;
 
-/** Root-relative URL of a page, with trailing slash: "/entrainements/", "/en/trainings/", "/en/". */
+/** Root-relative URL of a page, with trailing slash and base path: "/entrainements/", "/en/trainings/", "/en/". */
 export function pathFor(key: RouteKey, locale: Locale): string {
   const prefix = locale === DEFAULT_LOCALE ? '' : `/${locale}`;
   const slug = ROUTES[key][locale];
-  return `${prefix}/${slug ? `${slug}/` : ''}`;
+  return withBase(`${prefix}/${slug ? `${slug}/` : ''}`);
 }
 
 /** Finds which page and language a root-relative path belongs to. */

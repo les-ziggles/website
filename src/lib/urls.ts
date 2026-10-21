@@ -1,10 +1,15 @@
 // Absolute URLs and per-page alternates (canonical, hreflang).
 
 import { SITE } from '../site.config';
+import { withBase } from '../deploy.config';
 import { DEFAULT_LOCALE, LOCALES, LOCALE_META, type Locale } from '../i18n/locales';
 import { pathFor, type RouteKey } from '../i18n/routes';
 
+/** Absolute URL of a path that already includes the base path (page URLs, processed images). */
 export const absoluteUrl = (path: string) => new URL(path, SITE.url).href;
+
+/** Absolute URL of a file at the root of the site ("/social-card.jpg"), adding the base path. */
+export const publicUrl = (path: string) => absoluteUrl(withBase(path));
 
 export const canonicalUrl = (key: RouteKey, locale: Locale) => absoluteUrl(pathFor(key, locale));
 

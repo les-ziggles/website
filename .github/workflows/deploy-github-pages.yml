@@ -1,0 +1,61 @@
+# Builds the site and publishes it on GitHub Pages at every push to main.
+#
+# The site URL and base path come from the Pages settings of the repository:
+#   https://les-ziggles.github.io/website/ today; the root of the domain once a custom domain is set.
+# Search engine indexing is off unless the repository variable SITE_INDEXING is set to "true"
+# (Settings > Secrets and variables > Actions > Variables).
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time; a newer push replaces a queued one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - uses: oven-sh/setup-bun@v2
+
+      - id: pages
+        uses: actions/configure-pages@v6
+
+      - run: bun install --frozen-lockfile
+
+      - name: Type check, build and audit
+        run: bun run verify
+        env:
+          SITE_URL: ${{ steps.pages.outputs.origin }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          SITE_INDEXING: ${{ vars.SITE_INDEXING || 'false' }}
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

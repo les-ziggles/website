@@ -5,7 +5,7 @@ import { SITE } from '../site.config';
 import { LOCALES, LOCALE_META, type Locale } from '../i18n/locales';
 import { useTranslations } from '../i18n/ui';
 import { type RouteKey } from '../i18n/routes';
-import { absoluteUrl, canonicalUrl } from './urls';
+import { canonicalUrl, publicUrl } from './urls';
 
 type JsonLd = Record<string, unknown>;
 
@@ -30,9 +30,9 @@ export function organization(locale: Locale): JsonLd {
     name: SITE.name,
     alternateName: ['Ziggles', SITE.legalName],
     description: t('site.tagline'),
-    url: absoluteUrl('/'),
-    logo: { '@type': 'ImageObject', url: absoluteUrl('/icons/icon-512.png'), width: 512, height: 512 },
-    image: absoluteUrl('/social-card.jpg'),
+    url: publicUrl('/'),
+    logo: { '@type': 'ImageObject', url: publicUrl('/icons/icon-512.png'), width: 512, height: 512 },
+    image: publicUrl('/social-card.jpg'),
     email: SITE.email,
     foundingDate: String(SITE.foundingYear),
     sport: ['Ultimate', 'Disc golf'],
@@ -47,7 +47,7 @@ export function website(): JsonLd {
   return {
     '@type': 'WebSite',
     '@id': WEBSITE_ID,
-    url: absoluteUrl('/'),
+    url: publicUrl('/'),
     name: SITE.name,
     inLanguage: LOCALES.map((l) => LOCALE_META[l].htmlLang),
     publisher: { '@id': ORGANIZATION_ID },
