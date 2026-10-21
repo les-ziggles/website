@@ -40,6 +40,21 @@ export const SITE = {
     instagramHandle: '@ziggles06',
   },
   attendanceUrl: 'https://ziggles.yaentrainement.fr/',
+  /**
+   * Public calendars shown in the "Actualités" section of the home page. Their iCal feeds are read at build
+   * time (the site is rebuilt every night) and offered to visitors as subscriptions.
+   */
+  calendars: {
+    /** Club events: get-togethers, tournaments, championships and school holidays (Google Calendar). */
+    club: {
+      ics: 'https://calendar.google.com/calendar/ical/c_95109aa781e440b2da2f392b148bda27d81c6106535721ac91f92925d14b916d%40group.calendar.google.com/public/basic.ics',
+      googleCalendarId: 'c_95109aa781e440b2da2f392b148bda27d81c6106535721ac91f92925d14b916d@group.calendar.google.com',
+    },
+    /** Training slots, managed on yaentrainement.fr. */
+    trainings: {
+      ics: 'https://ziggles.yaentrainement.fr/calendar/ical',
+    },
+  },
   medicalCertificateTemplateUrl: 'https://drive.google.com/file/d/1tmLvBe0vjNGHD9QcqwqrVqLmoJWBDOgi/view',
   licenceGuidePdfUrl: 'https://zigglessite.wordpress.com/wp-content/uploads/2024/08/demande-de-licence-mon-espace-licencie.pdf',
   introVideo: {

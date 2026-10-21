@@ -1,0 +1,789 @@
+---
+// Club calendars (src/content.config.ts → events) as a month grid, in the style of a calendar app.
+// - Each calendar can be shown or hidden with its checkbox (pure CSS) and subscribed to in a calendar app.
+// - Every week is a fixed-height CSS grid: days are columns, events sit in up to MAX_LANES lanes, multi-day
+//   events span several columns, and a "+N" note counts the events that do not fit.
+// - Clicking a day opens its full list of events in a popover (native popover API, no script).
+// - Lanes are computed twice (all calendars, and each calendar alone), so hiding a calendar re-packs the
+//   other one without leaving holes. MAX_LANES must match the lane rules of the stylesheet below.
+// - Without JavaScript every month is shown; with it, one month at a time with previous / next buttons.
+import { getCollection } from 'astro:content';
+import Icon from '../ui/Icon.astro';
+import { resolveLocale } from '../../i18n/locales';
+import { useTranslations, type UiKey } from '../../i18n/ui';
+import { CLUB_TIME_ZONE, capitalize, formatClock, intlLocale } from '../../lib/format';
+import type { CalendarKey, CalendarEvent } from '../../lib/calendar-loader';
+import { SITE } from '../../site.config';
+
+const MAX_LANES = 3;
+
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const lang = intlLocale(locale);
+
+const webcal = (url: string) => url.replace(/^https?:/, 'webcal:');
+const googleSubscribe = (source: string) => `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(source)}`;
+const CALENDARS: { key: CalendarKey; ical: string; google: string }[] = [
+  {
+    key: 'club',
+    ical: webcal(SITE.calendars.club.ics),
+    google: googleSubscribe(SITE.calendars.club.googleCalendarId),
+  },
+  {
+    key: 'trainings',
+    ical: webcal(SITE.calendars.trainings.ics),
+    google: googleSubscribe(webcal(SITE.calendars.trainings.ics)),
+  },
+];
+
+// ---- Days as ISO strings in Antibes time ("2026-10-21") ----
+const DAY_MS = 86_400_000;
+const isoDay = (date: Date, timeZone: string) =>
+  new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit', timeZone }).format(date);
+const noon = (day: string) => new Date(`${day}T12:00:00Z`);
+const addDays = (day: string, days: number) => isoDay(new Date(noon(day).getTime() + days * DAY_MS), 'UTC');
+/** 1 = Monday … 7 = Sunday. */
+const isoWeekday = (day: string) => noon(day).getUTCDay() || 7;
+const nextMonth = (month: string) => addDays(`${month}-28`, 7).slice(0, 7);
+
+const today = isoDay(new Date(), CLUB_TIME_ZONE);
+
+type Event = CalendarEvent & { id: string; first: string; last: string; bar: boolean };
+const events: Event[] = (await getCollection('events'))
+  .map(({ id, data }) => {
+    const first = data.allDay ? isoDay(data.start, 'UTC') : isoDay(data.start, CLUB_TIME_ZONE);
+    const last = data.allDay ? isoDay(new Date(data.end.getTime() - DAY_MS), 'UTC') : isoDay(data.end, CLUB_TIME_ZONE);
+    // All-day and multi-day events are drawn as filled bars, timed events as a dot, a time and a title.
+    return { id, ...data, first, last, bar: data.allDay || first !== last };
+  })
+  .sort(
+    (a, b) =>
+      Number(b.bar) - Number(a.bar) || a.first.localeCompare(b.first) || b.last.localeCompare(a.last) || a.start.getTime() - b.start.getTime(),
+  );
+
+const onDay = (day: string) => events.filter((event) => event.first <= day && event.last >= day);
+
+// ---- Lanes: each event takes the first lane free on every day it covers ----
+type Segment = { event: Event; col: number; span: number; before: boolean; after: boolean };
+function lanes(segments: Segment[]) {
+  const taken: boolean[][] = [];
+  const result = new Map<Segment, number>();
+  for (const segment of segments) {
+    const cols = Array.from({ length: segment.span }, (_, i) => segment.col + i);
+    let lane = 0;
+    while (cols.some((col) => taken[lane]?.[col])) lane++;
+    taken[lane] ??= [];
+    for (const col of cols) taken[lane][col] = true;
+    result.set(segment, lane + 1);
+  }
+  return result;
+}
+const laneClass = (scenario: 'all' | 'solo', lane: number) => `lane-${scenario}-${lane > MAX_LANES ? 'over' : lane}`;
+
+// ---- Months: from the current one to the last event, each as full Monday-to-Sunday weeks ----
+const lastMonth = events
+  .map((event) => event.last)
+  .sort()
+  .at(-1)
+  ?.slice(0, 7);
+const months = [];
+for (let month = today.slice(0, 7); lastMonth && month <= lastMonth; month = nextMonth(month)) {
+  const firstOfMonth = `${month}-01`;
+  const lastOfMonth = addDays(`${nextMonth(month)}-01`, -1);
+  const weeks = [];
+  for (let monday = addDays(firstOfMonth, 1 - isoWeekday(firstOfMonth)); monday <= lastOfMonth; monday = addDays(monday, 7)) {
+    const days = Array.from({ length: 7 }, (_, i) => addDays(monday, i));
+    const sunday = days[6];
+    const segments: Segment[] = events
+      .filter((event) => event.first <= sunday && event.last >= monday)
+      .map((event) => {
+        const from = event.first < monday ? monday : event.first;
+        const to = event.last > sunday ? sunday : event.last;
+        return { event, col: isoWeekday(from), span: isoWeekday(to) - isoWeekday(from) + 1, before: event.first < monday, after: event.last > sunday };
+      });
+    const all = lanes(segments);
+    const solo = new Map(CALENDARS.flatMap(({ key }) => [...lanes(segments.filter((segment) => segment.event.calendar === key)).entries()]));
+    // Events left out of the lanes on a day: with every calendar shown, or with only one of them.
+    const hidden = (day: string, laneOf: Map<Segment, number>, calendar?: CalendarKey) =>
+      segments.filter(
+        (segment) =>
+          laneOf.get(segment)! > MAX_LANES &&
+          (!calendar || segment.event.calendar === calendar) &&
+          segment.event.first <= day &&
+          segment.event.last >= day,
+      ).length;
+    weeks.push({
+      days: days.map((day) => ({
+        day,
+        events: onDay(day),
+        more: { all: hidden(day, all), club: hidden(day, solo, 'club'), trainings: hidden(day, solo, 'trainings') },
+      })),
+      segments: segments.map((segment) => ({ ...segment, laneAll: all.get(segment)!, laneSolo: solo.get(segment)! })),
+    });
+  }
+  months.push({ key: month, weeks });
+}
+
+// ---- Labels ----
+const monthTitle = (month: string) =>
+  capitalize(new Intl.DateTimeFormat(lang, { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(noon(`${month}-01`)));
+const weekdays = Array.from({ length: 7 }, (_, i) =>
+  new Intl.DateTimeFormat(lang, { weekday: 'short', timeZone: 'UTC' }).format(noon(addDays('2024-01-01', i))),
+);
+const fullDate = (day: string) =>
+  capitalize(new Intl.DateTimeFormat(lang, { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(noon(day)));
+const shortDate = (day: string) => new Intl.DateTimeFormat(lang, { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(noon(day));
+const when = (event: Event) => {
+  if (event.first !== event.last) return `${shortDate(event.first)} – ${shortDate(event.last)}`;
+  if (event.allDay) return t('calendar.allDay');
+  return `${formatClock(event.start, locale)} – ${formatClock(event.end, locale)}`;
+};
+const popoverId = (month: string, day: string) => `calendar-${month}-day-${day}`;
+---
+
+<div class="club-calendar" data-club-calendar>
+  <fieldset class="calendar-sources">
+    <legend class="visually-hidden">{t('calendar.sources')}</legend>
+    {
+      CALENDARS.map(({ key, ical, google }) => (
+        <div class:list={['calendar-source', `calendar--${key}`]}>
+          <label class="calendar-source__toggle">
+            <input type="checkbox" checked data-calendar-toggle={key} />
+            <span class="calendar-source__name">{t(`calendar.${key}` as UiKey)}</span>
+          </label>
+          <p class="calendar-source__hint">{t(`calendar.${key}.hint` as UiKey)}</p>
+          <p class="calendar-source__subscribe">
+            <Icon name="calendar" size={18} />
+            <span>{t('calendar.subscribe')}</span>
+            <a href={ical}>
+              {t('calendar.subscribe.ical')}
+              <span class="visually-hidden"> – {t(`calendar.${key}` as UiKey)}</span>
+            </a>
+            <a href={google} rel="noopener">
+              {t('calendar.subscribe.google')}
+              <span class="visually-hidden"> – {t(`calendar.${key}` as UiKey)}</span>
+            </a>
+          </p>
+        </div>
+      ))
+    }
+  </fieldset>
+
+  {months.length === 0 && <p class="calendar-none">{t('calendar.none')}</p>}
+
+  <p class="visually-hidden" aria-live="polite" data-month-status></p>
+  {
+    months.map(({ key, weeks }, index) => (
+      <section class="calendar-month" data-calendar-month aria-labelledby={`calendar-month-${key}`}>
+        <header class="calendar-month__header">
+          <button class="calendar-month__step" type="button" data-month-step="-1" disabled={index === 0} hidden>
+            <Icon name="arrow-right" size={20} class="calendar-month__previous-icon" label={t('calendar.previous')} />
+          </button>
+          <h3 class="calendar-month__title" id={`calendar-month-${key}`} tabindex="-1">
+            {monthTitle(key)}
+          </h3>
+          <button class="calendar-month__step" type="button" data-month-step="1" disabled={index === months.length - 1} hidden>
+            <Icon name="arrow-right" size={20} label={t('calendar.next')} />
+          </button>
+        </header>
+
+        <div class="month-grid">
+          <div class="month-grid__weekdays" aria-hidden="true">
+            {weekdays.map((weekday) => (
+              <span>{weekday}</span>
+            ))}
+          </div>
+          {weeks.map((week) => (
+            <div class="month-week">
+              {week.days.map(({ day, events: dayEvents, more }, i) => {
+                const classes = [
+                  'month-day',
+                  `col-${i + 1}`,
+                  { 'month-day--outside': !day.startsWith(key), 'month-day--today': day === today },
+                ];
+                const content = (
+                  <>
+                    <span class="month-day__number" aria-hidden="true">
+                      {Number(day.slice(8))}
+                    </span>
+                    <span class="visually-hidden">{fullDate(day)}</span>
+                    {(['all', 'club', 'trainings'] as const).map(
+                      (scenario) =>
+                        more[scenario] > 0 && (
+                          <span class:list={['month-day__more', `more-${scenario}`]} aria-hidden="true">
+                            +{more[scenario]}
+                          </span>
+                        ),
+                    )}
+                  </>
+                );
+                return dayEvents.length > 0 ? (
+                  <button type="button" class:list={classes} popovertarget={popoverId(key, day)}>
+                    {content}
+                  </button>
+                ) : (
+                  <div class:list={classes}>{content}</div>
+                );
+              })}
+              {week.segments.map(({ event, col, span, before, after, laneAll, laneSolo }) => (
+                <div
+                  class:list={[
+                    'month-event',
+                    event.bar ? 'month-event--bar' : 'month-event--timed',
+                    `calendar--${event.calendar}`,
+                    `col-${col}`,
+                    `span-${span}`,
+                    laneClass('all', laneAll),
+                    laneClass('solo', laneSolo),
+                    { 'month-event--before': before, 'month-event--after': after },
+                  ]}
+                  data-calendar={event.calendar}
+                  aria-hidden="true"
+                >
+                  {!event.bar && <span class="month-event__time">{formatClock(event.start, locale)}</span>}
+                  <span class="month-event__title">{event.title}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        {weeks.flatMap((week) =>
+          week.days
+            .filter(({ events: dayEvents }) => dayEvents.length > 0)
+            .map(({ day, events: dayEvents }) => (
+              <div class="day-popover" id={popoverId(key, day)} popover>
+                <div class="day-popover__header">
+                  <p class="day-popover__date">{fullDate(day)}</p>
+                  <button class="day-popover__close" type="button" popovertarget={popoverId(key, day)} popovertargetaction="hide">
+                    <Icon name="close" size={20} label={t('calendar.close')} />
+                  </button>
+                </div>
+                <ul class="day-popover__events" role="list">
+                  {dayEvents.map((event) => (
+                    <li class:list={['day-event', `calendar--${event.calendar}`]} data-calendar={event.calendar}>
+                      <p class="day-event__when">{when(event)}</p>
+                      <p class="day-event__title">
+                        {event.url ? (
+                          <a href={event.url} rel="noopener">
+                            {event.title}
+                          </a>
+                        ) : (
+                          event.title
+                        )}
+                      </p>
+                      {event.location && (
+                        <p class="day-event__where">
+                          <Icon name="map-pin" size={16} />
+                          <span>{event.location}</span>
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                <p class="day-popover__empty">{t('calendar.hiddenDay')}</p>
+              </div>
+            )),
+        )}
+      </section>
+    ))
+  }
+</div>
+
+<script>
+  import { enhanceCalendarMonths } from '../../scripts/calendar-months';
+  document.querySelectorAll<HTMLElement>('[data-club-calendar]').forEach(enhanceCalendarMonths);
+</script>
+
+<style>
+  .club-calendar {
+    --calendar-color: var(--ziggles-navy);
+    --week-height: 6.25rem;
+    --day-number-height: 1.65rem;
+    --lane-height: 1.15rem;
+    display: grid;
+    gap: var(--space-l);
+    margin-top: var(--space-l);
+  }
+
+  @media (width < 40rem) {
+    .club-calendar {
+      --week-height: 3.75rem;
+      --day-number-height: 1.6rem;
+      --lane-height: 0.45rem;
+    }
+  }
+
+  .calendar--club {
+    --calendar-color: var(--ziggles-red);
+  }
+
+  .calendar--trainings {
+    --calendar-color: var(--ziggles-sea);
+  }
+
+  /* ---- Calendars: show / hide, subscribe ---- */
+
+  .calendar-sources {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+    gap: var(--space-m);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .calendar-source {
+    display: grid;
+    gap: var(--space-2xs);
+    padding: var(--space-m) var(--space-l);
+    border-left: 4px solid var(--calendar-color);
+    border-radius: var(--radius-m);
+    background: var(--color-page);
+  }
+
+  .calendar-source__toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    width: fit-content;
+    font-family: var(--font-headline);
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+
+  .calendar-source__toggle input {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    accent-color: var(--calendar-color);
+    cursor: pointer;
+  }
+
+  .calendar-source__hint {
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
+  }
+
+  .calendar-source__subscribe {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs) var(--space-s);
+    margin-top: var(--space-xs);
+    font-size: var(--font-size-small);
+  }
+
+  .calendar-source__subscribe > :global(.icon) {
+    color: var(--ziggles-gold-on-light);
+  }
+
+  .calendar-source__subscribe a {
+    font-weight: 600;
+  }
+
+  .calendar-none {
+    color: var(--color-text-muted);
+  }
+
+  /* ---- Month header ---- */
+
+  .calendar-month[hidden] {
+    display: none;
+  }
+
+  .calendar-month__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    margin-bottom: var(--space-s);
+  }
+
+  .calendar-month__title {
+    font-size: 1.35rem;
+  }
+
+  .calendar-month__step {
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 2px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    cursor: pointer;
+    transition:
+      border-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .calendar-month__step:hover:not(:disabled) {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .calendar-month__step:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .calendar-month__step[hidden] {
+    display: none;
+  }
+
+  /* With the buttons shown, the title sits between them. */
+  .calendar-month__step:not([hidden]) ~ .calendar-month__title,
+  .calendar-month__title:has(~ .calendar-month__step:not([hidden])) {
+    flex: 1;
+    text-align: center;
+  }
+
+  :global(.calendar-month__previous-icon) {
+    transform: scaleX(-1);
+  }
+
+  /* ---- Month grid ---- */
+
+  .month-grid {
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-m);
+    background: var(--color-surface);
+  }
+
+  .month-grid__weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .month-grid__weekdays span {
+    padding-block: var(--space-xs);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .month-week {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    grid-template-rows: var(--day-number-height) repeat(3, var(--lane-height)) 1fr;
+    row-gap: 2px;
+    height: var(--week-height);
+  }
+
+  .month-week + .month-week {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .col-1 { grid-column-start: 1; }
+  .col-2 { grid-column-start: 2; }
+  .col-3 { grid-column-start: 3; }
+  .col-4 { grid-column-start: 4; }
+  .col-5 { grid-column-start: 5; }
+  .col-6 { grid-column-start: 6; }
+  .col-7 { grid-column-start: 7; }
+  .span-1 { grid-column-end: span 1; }
+  .span-2 { grid-column-end: span 2; }
+  .span-3 { grid-column-end: span 3; }
+  .span-4 { grid-column-end: span 4; }
+  .span-5 { grid-column-end: span 5; }
+  .span-6 { grid-column-end: span 6; }
+  .span-7 { grid-column-end: span 7; }
+
+  /* A day is the whole column of its week; days with events are buttons opening their popover. */
+  .month-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    grid-row: 1 / -1;
+    min-width: 0;
+    padding: 0.2rem 0 0.1rem;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+  }
+
+  .month-day:not(.col-1) {
+    border-left: 1px solid var(--color-border);
+  }
+
+  button.month-day {
+    cursor: pointer;
+    transition: background-color var(--transition-fast);
+  }
+
+  button.month-day:hover {
+    background: color-mix(in oklab, var(--ziggles-navy), transparent 95%);
+  }
+
+  button.month-day:focus-visible {
+    outline-offset: -3px;
+  }
+
+  .month-day__number {
+    display: inline-grid;
+    place-items: center;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .month-day--outside .month-day__number {
+    color: var(--color-text-muted);
+    font-weight: 400;
+  }
+
+  .month-day--today .month-day__number {
+    background: var(--ziggles-red);
+    color: var(--ziggles-white);
+  }
+
+  .month-day__more {
+    display: none;
+    margin-top: auto;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-text-muted);
+  }
+
+  .more-all {
+    display: block;
+  }
+
+  /* Events: drawn over the days, clicks go through to the day underneath. */
+  .month-event {
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-width: 0;
+    margin-inline: 3px;
+    padding-inline: 0.35rem;
+    overflow: hidden;
+    border-radius: var(--radius-s);
+    font-size: 0.75rem;
+    line-height: var(--lane-height);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .month-event--bar {
+    background: var(--calendar-color);
+    color: var(--ziggles-white);
+    font-weight: 600;
+  }
+
+  .month-event--before {
+    margin-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .month-event--after {
+    margin-right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .month-event--timed::before {
+    content: '';
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--calendar-color);
+  }
+
+  .month-event__time {
+    flex: none;
+    color: var(--color-text-muted);
+  }
+
+  .month-event__title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .month-event--timed .month-event__title {
+    font-weight: 600;
+  }
+
+  /* Small screens: events become colour strips, the popover gives the details. */
+  @media (width < 40rem) {
+    .month-event {
+      margin-inline: 2px;
+      padding: 0;
+      font-size: 0;
+    }
+
+    .month-event--timed {
+      background: var(--calendar-color);
+    }
+
+    .month-event--timed::before {
+      display: none;
+    }
+  }
+
+  .lane-all-1 { grid-row: 2; }
+  .lane-all-2 { grid-row: 3; }
+  .lane-all-3 { grid-row: 4; }
+  .lane-all-over { display: none; }
+
+  /* ---- Day popover ---- */
+
+  /* margin: auto centres it in the viewport (the global reset sets margins to 0). */
+  .day-popover {
+    margin: auto;
+    width: min(26rem, 100vw - 2rem);
+    max-height: min(32rem, 100vh - 2rem);
+    padding: var(--space-l);
+    border: 0;
+    border-radius: var(--radius-l);
+    background: var(--color-surface);
+    color: var(--color-text);
+    box-shadow: 0 12px 48px rgb(4 12 54 / 0.3);
+  }
+
+  .day-popover::backdrop {
+    background: rgb(4 12 54 / 0.3);
+  }
+
+  .day-popover__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    margin-bottom: var(--space-m);
+  }
+
+  .day-popover__date {
+    font-family: var(--font-headline);
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+
+  .day-popover__close {
+    display: inline-grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: var(--color-page);
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  .day-popover__events {
+    display: grid;
+    gap: var(--space-xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .day-event {
+    display: grid;
+    gap: 0.1rem;
+    padding: var(--space-xs) var(--space-s);
+    border-left: 4px solid var(--calendar-color);
+    border-radius: var(--radius-s);
+    background: color-mix(in oklab, var(--calendar-color), transparent 93%);
+  }
+
+  .day-event__when {
+    font-size: var(--font-size-small);
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+
+  .day-event__title {
+    font-weight: 700;
+  }
+
+  .day-event__where {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2xs);
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
+  }
+
+  .day-event__where :global(.icon) {
+    flex: none;
+    margin-top: 0.15em;
+  }
+
+  .day-popover__empty {
+    display: none;
+    color: var(--color-text-muted);
+  }
+
+  /* ---- Hidden calendars ---- */
+
+  /* Their events, in the grid and in the popovers. */
+  .club-calendar:has([data-calendar-toggle='club']:not(:checked)) [data-calendar='club'],
+  .club-calendar:has([data-calendar-toggle='trainings']:not(:checked)) [data-calendar='trainings'] {
+    display: none;
+  }
+
+  /* The other calendar takes its own lanes and "+N" counts. */
+  .club-calendar:has([data-calendar-toggle='club']:not(:checked)) .more-all,
+  .club-calendar:has([data-calendar-toggle='trainings']:not(:checked)) .more-all {
+    display: none;
+  }
+
+  .club-calendar:has([data-calendar-toggle='club']:not(:checked)) .more-trainings,
+  .club-calendar:has([data-calendar-toggle='trainings']:not(:checked)) .more-club {
+    display: block;
+  }
+
+  .club-calendar:has([data-calendar-toggle='club']:not(:checked)) [data-calendar='trainings'].lane-solo-1,
+  .club-calendar:has([data-calendar-toggle='trainings']:not(:checked)) [data-calendar='club'].lane-solo-1 {
+    display: flex;
+    grid-row: 2;
+  }
+
+  .club-calendar:has([data-calendar-toggle='club']:not(:checked)) [data-calendar='trainings'].lane-solo-2,
+  .club-calendar:has([data-calendar-toggle='trainings']:not(:checked)) [data-calendar='club'].lane-solo-2 {
+    display: flex;
+    grid-row: 3;
+  }
+
+  .club-calendar:has([data-calendar-toggle='club']:not(:checked)) [data-calendar='trainings'].lane-solo-3,
+  .club-calendar:has([data-calendar-toggle='trainings']:not(:checked)) [data-calendar='club'].lane-solo-3 {
+    display: flex;
+    grid-row: 4;
+  }
+
+  .club-calendar:has([data-calendar-toggle='club']:not(:checked)) [data-calendar='trainings'].lane-solo-over,
+  .club-calendar:has([data-calendar-toggle='trainings']:not(:checked)) [data-calendar='club'].lane-solo-over {
+    display: none;
+  }
+
+  /* Both calendars hidden: no counts left. */
+  .club-calendar:has([data-calendar-toggle='club']:not(:checked)):has([data-calendar-toggle='trainings']:not(:checked)) .month-day__more {
+    display: none;
+  }
+
+  /* A day whose events are all hidden says so in its popover. */
+  .club-calendar:has([data-calendar-toggle='club']:not(:checked)) .day-popover:not(:has([data-calendar='trainings'])) .day-popover__empty,
+  .club-calendar:has([data-calendar-toggle='trainings']:not(:checked)) .day-popover:not(:has([data-calendar='club'])) .day-popover__empty,
+  .club-calendar:has([data-calendar-toggle='club']:not(:checked)):has([data-calendar-toggle='trainings']:not(:checked)) .day-popover__empty {
+    display: block;
+  }
+</style>

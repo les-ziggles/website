@@ -3,6 +3,7 @@ import Band from './Band.astro';
 import ButtonGroup from './ButtonGroup.astro';
 import ButtonLink from './ButtonLink.astro';
 import Callout from './Callout.astro';
+import ClubCalendar from './ClubCalendar.astro';
 import ContentImage from './ContentImage.astro';
 import FeatureCard from './FeatureCard.astro';
 import FeatureGrid from './FeatureGrid.astro';
@@ -16,6 +17,7 @@ export const mdxComponents = {
   ButtonGroup,
   ButtonLink,
   Callout,
+  ClubCalendar,
   ContentImage,
   FeatureCard,
   FeatureGrid,

@@ -31,7 +31,9 @@ bun run preview
 - An animated landing page: the club badge with moving sea waves and a frisbee throw drawing its comic motion trail.
 - Pages for the association, trainings, membership and prices, the online registration guide, Disc Golf, contact and the legal notice, in both languages. French URLs keep the paths of the former WordPress site (`/lassociation/`, `/entrainements/`, `/inscriptions/`, …); English ones are translated (`/en/trainings/`, `/en/membership/`, …).
 - SEO: per-page titles and descriptions, canonical and hreflang links, Open Graph and Twitter cards, JSON-LD (`SportsOrganization`, `WebSite`, `WebPage`, `BreadcrumbList`, `SportsEvent` for weekly sessions, `OfferCatalog` for prices), `sitemap-index.xml`, `robots.txt` and `llms.txt`.
-- Privacy: no cookies, no analytics, fonts served from the site, YouTube loaded only on click from `youtube-nocookie.com`.
+- A "News" calendar on the home page: club events (Google Calendar) and training sessions (yaentrainement.fr), read from their iCal feeds at build time, each with a show / hide checkbox and subscription links for calendar apps.
+- Privacy: no cookies, no analytics, fonts served from the site, YouTube loaded only on click from `youtube-nocookie.com`, calendars copied at build time instead of embedded.
+- The original club badge for external use (federation, partners, press): `/brand/ziggles-logo.svg` and `/brand/ziggles-logo.png` (896×1200), served from `public/brand/`.
 - Footer palm trees swaying in the wind. Animations stay still when the visitor's system asks for reduced motion.
 
 ## Editing content
@@ -44,11 +46,12 @@ bun run preview
 | Membership prices | `src/content/data/membership-prices.yaml` |
 | Buttons, navigation and other interface text | `src/i18n/ui.ts` |
 | Emails, social accounts, association details (address, RNA), federation links | `src/site.config.ts` |
+| iCal feeds of the club and training calendars | `src/site.config.ts` (`calendars`) |
 | URLs of every page in each language | `src/i18n/routes.ts` |
 
 Each MDX page starts with its heading, introduction and SEO fields. The build fails with a clear message when an SEO title is longer than 65 characters, a description falls outside 70–165 characters, or a translation is missing.
 
-MDX pages can use these components without importing them: `Band`, `ButtonGroup` (a row of buttons), `ButtonLink`, `Callout`, `ContentImage`, `FeatureCard`, `FeatureGrid`, `PartnerLogo`, `PriceList`, `TrainingSchedule`, `VideoFacade` (see `src/components/content/`).
+MDX pages can use these components without importing them: `Band`, `ButtonGroup` (a row of buttons), `ButtonLink`, `Callout`, `ClubCalendar`, `ContentImage`, `FeatureCard`, `FeatureGrid`, `PartnerLogo`, `PriceList`, `TrainingSchedule`, `VideoFacade` (see `src/components/content/`).
 
 After editing French text, run `bun run typography` to add the narrow no-break spaces French puts before `: ; ! ?` and inside `« »`.
 
@@ -77,7 +80,9 @@ This runs the type checks, builds the site and audits every built page (`scripts
 
 ## Deployment
 
-Every push to `main` runs `.github/workflows/deploy-github-pages.yml`: it type-checks, builds and audits the site, then publishes `dist/` to GitHub Pages.
+Every push to `main` runs `.github/workflows/deploy-github-pages.yml`: it type-checks, builds and audits the site, then publishes `dist/` to GitHub Pages. The same workflow also runs every night at 2:00 (Antibes time, summer and winter) so the home page calendar picks up new and changed events; it can be started by hand from the Actions tab.
+
+If a calendar feed cannot be read, the build fails and the site already online stays as it is. Locally, the build keeps the events it loaded last time. GitHub disables scheduled workflows after 60 days without activity in the repository: re-enable it from the Actions tab if the calendar stops updating.
 
 Where the site lives is set at build time by three environment variables, read in `src/deploy.config.ts`:
 

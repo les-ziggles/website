@@ -12,17 +12,6 @@
   venue: gymnase-saint-claude
   resumesOn: 2026-09-08
 
-- id: ultimate-indoor-friday
-  discipline: ultimate
-  setting: indoor
-  title: { fr: "Indoor du midi", en: "Lunchtime indoor" }
-  audience: { fr: "Adultes, tous niveaux", en: "Adults, all levels" }
-  weekday: 5
-  start: "12:15"
-  end: "13:30"
-  venue: gymnase-saint-claude
-  resumesOn: 2026-09-11
-
 - id: ultimate-youth-thursday
   discipline: ultimate
   setting: outdoor

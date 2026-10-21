@@ -4,12 +4,15 @@
 // sessions  – weekly training sessions (Ultimate and Disc Golf), src/content/data/training-sessions.yaml
 // venues    – where we play, src/content/data/venues.yaml
 // prices    – membership prices for the current season, src/content/data/membership-prices.yaml
+// events    – upcoming events of the public calendars, read from their iCal feeds at build time
 //
 // SEO fields are validated here so a too-long title or description fails the build with a clear message.
 
 import { defineCollection, reference } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { calendarLoader } from './lib/calendar-loader';
+import { SITE } from './site.config';
 
 /** A text in both languages. Strict, so an unquoted comma in YAML (`{ fr: a, b, en: c }`) fails the build. */
 const localized = z.object({ fr: z.string(), en: z.string() }).strict();
@@ -78,4 +81,17 @@ const prices = defineCollection({
   }),
 });
 
-export const collections = { pages, venues, sessions, prices };
+const events = defineCollection({
+  loader: calendarLoader({ club: SITE.calendars.club.ics, trainings: SITE.calendars.trainings.ics }),
+  schema: z.object({
+    calendar: z.enum(['club', 'trainings']),
+    title: z.string(),
+    start: z.date(),
+    end: z.date(),
+    allDay: z.boolean(),
+    location: z.string().optional(),
+    url: z.url().optional(),
+  }),
+});
+
+export const collections = { pages, venues, sessions, prices, events };

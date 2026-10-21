@@ -2,7 +2,10 @@
 
 import { LOCALE_META, type Locale } from '../i18n/locales';
 
-const intlLocale = (locale: Locale) => LOCALE_META[locale].htmlLang;
+export const intlLocale = (locale: Locale) => LOCALE_META[locale].htmlLang;
+
+/** Every time shown on the site is Antibes time. */
+export const CLUB_TIME_ZONE = 'Europe/Paris';
 
 /** ISO weekday (1 = Monday … 7 = Sunday) -> "lundi" / "Monday". */
 export function weekdayName(weekday: number, locale: Locale): string {
@@ -18,6 +21,12 @@ export function formatTime(time: string, locale: Locale): string {
   if (locale === 'fr') return `${hours} h ${String(minutes).padStart(2, '0')}`;
   const date = new Date(Date.UTC(2024, 0, 1, hours, minutes));
   return new Intl.DateTimeFormat('en-GB', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'UTC' }).format(date);
+}
+
+/** Instant -> its time of day in Antibes, "19 h 30" (fr) / "7:30 pm" (en). */
+export function formatClock(instant: Date, locale: Locale): string {
+  const time = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hourCycle: 'h23', timeZone: CLUB_TIME_ZONE }).format(instant);
+  return formatTime(time, locale);
 }
 
 /** Date -> "8 septembre 2026" / "8 September 2026". */

@@ -1,4 +1,5 @@
-# Builds the site and publishes it on GitHub Pages at every push to main.
+# Builds the site and publishes it on GitHub Pages at every push to main, and every night at 2:00
+# (Antibes time) so the calendars of the home page pick up new and changed events.
 #
 # The site URL and base path come from the Pages settings of the repository:
 #   https://les-ziggles.github.io/website/ today; the root of the domain once a custom domain is set.
@@ -10,6 +11,11 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # GitHub schedules run in UTC: 2:00 in Antibes is 0:00 UTC in summer and 1:00 UTC in winter.
+  # Both are scheduled; the `nightly` job keeps the one that matches the current French offset.
+  schedule:
+    - cron: '0 0 * * *'
+    - cron: '0 1 * * *'
   workflow_dispatch:
 
 permissions:
@@ -23,7 +29,26 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  nightly:
+    runs-on: ubuntu-latest
+    outputs:
+      build: ${{ steps.check.outputs.build }}
+    steps:
+      - id: check
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+        run: |
+          build=true
+          if [ "$GITHUB_EVENT_NAME" = schedule ]; then
+            utc_hour=$(echo "$SCHEDULE" | cut -d' ' -f2)
+            paris_offset=$(TZ=Europe/Paris date +%z | cut -c2-3)
+            [ $(( 10#$utc_hour + 10#$paris_offset )) -eq 2 ] || build=false
+          fi
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+
   build:
+    needs: nightly
+    if: needs.nightly.outputs.build == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
