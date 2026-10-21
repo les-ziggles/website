@@ -1,19 +1,26 @@
 ---
-// A cluster of palm trees swaying in a light breeze, on the right of the footer top edge. Decorative.
+// A cluster of palm trees swaying in the sea breeze, on the right of the footer top edge, each casting
+// its shadow on the ground. Decorative.
 import palmSvg from '../../assets/brand/ziggles-palm-tree.svg?raw';
 
 // Path data of the palm artwork; its own coordinate box is 649 678 123 154.
 const palmPath = palmSvg.match(/\sd="([^"]+)"/)![1];
 
-// Each cluster is a 300×160 scene, pinned to its side of the screen.
+// Each cluster is a 360×160 scene, pinned to its side of the screen; the ground is its bottom edge.
 // x: left edge of the tree, scale: size, strength: how much it moves, flip: mirrored.
 const CLUSTERS = {
   right: [
-    { x: 40, scale: 0.75, strength: 0.9, flip: false },
-    { x: 150, scale: 1, strength: 1.1, flip: false },
+    { x: 100, scale: 0.75, strength: 0.9, flip: false },
+    { x: 210, scale: 1, strength: 1.1, flip: false },
   ],
 };
-const SCENE = { width: 300, height: 160 };
+const SCENE = { width: 360, height: 160 };
+
+// Shadows: every point of a tree is projected onto the ground, with the sun low on the right, in front of the trees.
+// A point `h` above the ground lands LENGTH × h to the left and DEPTH × h up (ground seen at a low angle).
+// The projection is a plain transform of a <use> copy, so the shadow follows the wind animation for free.
+const SHADOW = { length: 0.85, depth: 0.24 };
+const shadowTransform = `matrix(1 0 ${SHADOW.length} ${SHADOW.depth} ${-SCENE.height * SHADOW.length} ${SCENE.height * (1 - SHADOW.depth)})`;
 
 const transformFor = ({ x, scale, flip }: { x: number; scale: number; flip: boolean }) =>
   `translate(${x + (flip ? 123 * scale : 0)} ${SCENE.height - 154 * scale}) scale(${flip ? -scale : scale} ${scale}) translate(-649 -678)`;
@@ -23,9 +30,22 @@ const transformFor = ({ x, scale, flip }: { x: number; scale: number; flip: bool
   {
     Object.entries(CLUSTERS).map(([side, palms]) => (
       <svg class:list={['palm-grove__cluster', `palm-grove__cluster--${side}`]} viewBox={`0 0 ${SCENE.width} ${SCENE.height}`} focusable="false">
-        {palms.map((palm) => (
+        <g class="palm-grove__shadows">
+          {palms.map((_, index) => (
+            <use href={`#palm-grove-${side}-${index}`} transform={shadowTransform} />
+          ))}
+        </g>
+        {palms.map((palm, index) => (
           // A mirrored tree must bend the other way in its own coordinates to follow the same wind.
-          <path class="palm-grove__palm" data-palm data-palm-strength={palm.strength} data-palm-wind={palm.flip ? -1 : 1} d={palmPath} transform={transformFor(palm)} />
+          <path
+            id={`palm-grove-${side}-${index}`}
+            class="palm-grove__palm"
+            data-palm
+            data-palm-strength={palm.strength}
+            data-palm-wind={palm.flip ? -1 : 1}
+            d={palmPath}
+            transform={transformFor(palm)}
+          />
         ))}
       </svg>
     ))
@@ -49,12 +69,17 @@ const transformFor = ({ x, scale, flip }: { x: number; scale: number; flip: bool
   .palm-grove__cluster {
     height: clamp(5.5rem, 4rem + 6vw, 10rem);
     width: auto;
-    aspect-ratio: 300 / 160;
+    aspect-ratio: 360 / 160;
     margin-bottom: -1px;
   }
 
   /* Same navy as the footer: the trees rise out of it as silhouettes. */
   .palm-grove__palm {
     fill: var(--ziggles-navy);
+  }
+
+  /* One group opacity, so overlapping shadows do not get darker where they cross. */
+  .palm-grove__shadows {
+    opacity: 0.2;
   }
 </style>

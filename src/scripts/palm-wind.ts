@@ -1,13 +1,13 @@
-// Light sea breeze on the footer palm trees (markup: src/components/brand/PalmGrove.astro).
+// Sea breeze on the footer palm trees (markup: src/components/brand/PalmGrove.astro).
 // The trunk bends more and more towards the top under slow gusts; fronds flutter faster.
 // Coordinates are those of src/assets/brand/ziggles-palm-tree.svg.
 
 import { animationsEnabled, watchVisibility } from './motion';
 import { animationLoop, bounds, buildPath, parsePath } from './svg-path';
 
-// Measured on the artwork: where the fronds meet, and the foot of the trunk on the island.
+// Measured on the artwork: where the fronds meet, and the foot of the trunk on the ground.
 const CROWN = { x: 714, y: 737 };
-const TRUNK_FOOT = { x: 697, y: 820 };
+const TRUNK_FOOT = { x: 691, y: 832 };
 
 const trunkXAt = (y: number) => TRUNK_FOOT.x + ((TRUNK_FOOT.y - y) / (TRUNK_FOOT.y - CROWN.y)) * (CROWN.x - TRUNK_FOOT.x);
 
@@ -40,12 +40,12 @@ export function animatePalms(container: Element) {
           'd',
           buildPath(palm.segments, (x, y) => {
             const height = Math.max(0, (TRUNK_FOOT.y - y) / (TRUNK_FOOT.y - palm.box.y)); // 0 at the trunk foot
-            if (y > TRUNK_FOOT.y - 2) return [x, y]; // the island stays put
-            const bend = 7 * palm.wind * palm.strength * height * height * sway;
+            if (y > TRUNK_FOOT.y - 2) return [x, y]; // the foot stays on the ground
+            const bend = 12 * palm.wind * palm.strength * height * height * sway;
             // Points away from the trunk belong to the fronds: they flutter.
             const frond = Math.min(1, Math.max(0, (Math.abs(x - trunkXAt(y)) - 5) / 28)) * (y < bottom - 25 ? 1 : 0);
-            const flutterX = 1.6 * palm.strength * frond * gust * Math.sin(t * 5.2 + x * 0.12 + palm.phase);
-            const flutterY = 1.1 * palm.strength * frond * gust * Math.cos(t * 4.3 + x * 0.17 + palm.phase);
+            const flutterX = 2.6 * palm.strength * frond * gust * Math.sin(t * 5.2 + x * 0.12 + palm.phase);
+            const flutterY = 1.8 * palm.strength * frond * gust * Math.cos(t * 4.3 + x * 0.17 + palm.phase);
             return [x + bend + flutterX, y + Math.abs(bend) * 0.06 + flutterY];
           }),
         );

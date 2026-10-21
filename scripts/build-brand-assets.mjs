@@ -97,7 +97,11 @@ write('src/assets/brand/ziggles-logo.svg', dropEditorIds(cleanMarkup(master)).re
 // - the frisbee shapes are grouped (#logo-frisbee) so they can fly along the trail.
 // - the bird's dark-red shading (path324) is lifted above the frisbee so the disc passes behind the bird.
 // - the trail pieces get class "logo-trail"; a mask (#logo-trail-mask) reveals them along #logo-flight.
-// - the waves group becomes #logo-waves, without its smallest wave (path526, far right).
+// - the waves group becomes #logo-waves; its smallest wave (path526, far right) is redrawn with a crest
+//   like the others instead of the flat streak of the master.
+
+// Smallest wave (path526), redrawn as a small peaked wave.
+const SMALL_WAVE = 'M 602.257,853.293 C 615,851.2 630,846.4 642.4,842.3 C 643.4,842 644.4,842.1 645.2,842.6 C 652,847 661,858.6 674.6,863.1 L 672.4,864.1 C 663,860.8 654,854.4 645,850.2 C 633,854.6 618,856 602.257,853.293 Z';
 
 // Centerline of the motion trail, from its thin tip (top-left) to the frisbee's resting center.
 const FLIGHT = 'M 232,508 C 180,535 135,575 132,625 C 130,670 185,705 245,722 C 300,738 360,757 440,760 C 520,762 600,700 657,606';
@@ -120,7 +124,8 @@ function buildAnimatedLogo(source) {
 
   for (const id of TRAIL_IDS) svg = svg.replace(getPath(svg, id), (el) => el.replace('<path', '<path class="logo-trail"'));
   svg = svg.replace(/<g\b([^>]*?)id="g1"/, '<g$1id="logo-waves"');
-  svg = svg.replace(getPath(svg, 'path526'), '');
+  const smallWave = getPath(svg, 'path526');
+  svg = svg.replace(smallWave, smallWave.replace(attr(smallWave, 'd'), SMALL_WAVE));
 
   // Reveal mask: a wide stroke along the flight line, minus a frisbee-shaped hole that follows the disc,
   // so the trail is drawn behind the frisbee and never painted over it.
@@ -158,8 +163,16 @@ ${shapes.map((el) => '    ' + el.replace(/\sid="[^"]*"/, '')).join('\n')}
 }
 
 // ---------- 4. palm tree ----------
+// The master tree stands on a small island. The island is cut off and the trunk carried down to the
+// bottom of the box (y 832) with a slightly flared foot, so the footer can cast the tree's shadow instead.
+
+// Outline section from the trunk's left foot (689.13, 814.04) around the island to its right foot (704.99, 814.75).
+const PALM_ISLAND = /(-12\.55664,25\.52539 )[^z]*?( 11\.77098,-34\.42794)/;
+const PALM_TRUNK_FOOT = 'C 687.98,817.04 686.6,821.5 685,825.6 C 684,828 682.4,830.2 681.2,832 L 701.2,832 C 700.5,829.8 700.3,827.3 700.8,824.6 C 701.1,823 703.81,818.19 704.98631,814.74802 c';
 {
   const palm = read('design/ziggles-palm-tree-master.svg');
-  const d = attr(palm.match(PATH_RE)[0], 'd');
+  const master = attr(palm.match(PATH_RE)[0], 'd');
+  if (!PALM_ISLAND.test(master)) throw new Error('palm island not found');
+  const d = master.replace(PALM_ISLAND, `$1${PALM_TRUNK_FOOT}$2`);
   write('src/assets/brand/ziggles-palm-tree.svg', svgDocument('649 678 123 154', `  <path fill="#ffffff" d="${d}" />`, 'Palmier'));
 }
