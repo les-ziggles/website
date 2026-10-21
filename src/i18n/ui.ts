@@ -19,7 +19,7 @@ const fr = {
   'nav.home': 'Accueil',
   'nav.association': 'L’association',
   'nav.trainings': 'Entraînements',
-  'nav.membership': 'Inscriptions',
+  'nav.membership': 'Informations inscription',
   'nav.registration-guide': 'Inscription en ligne',
   'nav.disc-golf': 'Disc Golf',
   'nav.contact': 'Contact',
