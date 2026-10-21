@@ -1,0 +1,85 @@
+# Weekly sessions for the 2026-2027 season. Update times, venues and restart dates each season.
+# weekday: 1 = Monday … 7 = Sunday. venue: an id from venues.yaml.
+
+- id: ultimate-indoor-tuesday
+  discipline: ultimate
+  setting: indoor
+  title: { fr: "Indoor du midi", en: "Lunchtime indoor" }
+  audience: { fr: "Adultes, tous niveaux", en: "Adults, all levels" }
+  weekday: 2
+  start: "12:15"
+  end: "13:30"
+  venue: gymnase-saint-claude
+  resumesOn: 2026-09-08
+
+- id: ultimate-indoor-friday
+  discipline: ultimate
+  setting: indoor
+  title: { fr: "Indoor du midi", en: "Lunchtime indoor" }
+  audience: { fr: "Adultes, tous niveaux", en: "Adults, all levels" }
+  weekday: 5
+  start: "12:15"
+  end: "13:30"
+  venue: gymnase-saint-claude
+  resumesOn: 2026-09-11
+
+- id: ultimate-youth-thursday
+  discipline: ultimate
+  setting: outdoor
+  title: { fr: "Section jeunes", en: "Youth section" }
+  audience: { fr: "Jeunes de 13 à 17 ans", en: "Young players aged 13 to 17" }
+  weekday: 4
+  start: "18:15"
+  end: "19:20"
+  venue: stade-paul-charpin
+  resumesOn: 2026-09-10
+
+- id: ultimate-leisure-monday
+  discipline: ultimate
+  setting: outdoor
+  title: { fr: "Créneau loisir", en: "Leisure session" }
+  audience: { fr: "Ouvert à tous", en: "Open to everyone" }
+  weekday: 1
+  start: "19:30"
+  end: "21:00"
+  venue: stade-de-la-fontonne
+  resumesOn: 2026-09-07
+  note:
+    fr: Idéal pour revoir les bases en complément du dimanche.
+    en: Ideal to work on the basics alongside the Sunday session.
+
+- id: ultimate-senior-sunday
+  discipline: ultimate
+  setting: outdoor
+  title: { fr: "Créneau sénior", en: "Senior session" }
+  audience: { fr: "Ouvert à tous, débutants comme expérimentés", en: "Open to everyone, beginners and experienced players" }
+  weekday: 7
+  start: "19:30"
+  end: "21:30"
+  venue: stade-pierre-bel
+  resumesOn: 2026-09-20
+
+- id: disc-golf-monday
+  discipline: disc-golf
+  setting: outdoor
+  title: { fr: "Technique sur corbeille", en: "Basket technique" }
+  audience: { fr: "Membres de la section Disc Golf", en: "Disc Golf section members" }
+  weekday: 1
+  start: "12:15"
+  end: "13:30"
+  venue: foret-de-la-valmasque
+  note:
+    fr: Travail technique sur corbeille, espace ouvert ou quelques trous à thème.
+    en: Technique on the basket, open field work or a few themed holes.
+
+- id: disc-golf-sunday
+  discipline: disc-golf
+  setting: outdoor
+  title: { fr: "Parcours de Vaugrenier", en: "Vaugrenier course" }
+  audience: { fr: "Membres de la section Disc Golf", en: "Disc Golf section members" }
+  weekday: 7
+  start: "16:30"
+  venue: parc-de-vaugrenier
+  note:
+    fr: Le 18 trous ou des sections plus ciblées, avant de rejoindre l’Ultimate à Biot.
+    en: The 18-hole course or targeted sections, before joining the Ultimate session in Biot.

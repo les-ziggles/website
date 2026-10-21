@@ -1,0 +1,59 @@
+---
+title: Les Ziggles, Ultimate in Antibes
+lede: The Ziggles are an Ultimate and Disc Golf club based in Antibes. Since 2003 we have been playing and sharing our sport across the Alpes-Maritimes, at practice and in tournaments.
+seo:
+  title: Les Ziggles – Ultimate & Disc Golf Club in Antibes, France
+  description: "Ultimate frisbee and Disc Golf club in Antibes on the French Riviera since 2003: indoor and outdoor practice, a youth section for ages 13–17 and national leagues."
+---
+
+import { SITE } from '../../../site.config';
+import teamPhoto from '../../../assets/images/club/club-team-photo.jpg';
+
+<Band>
+## Come and play with us
+
+Beginner or seasoned player, you are welcome at every session, all year round.
+
+<FeatureGrid>
+  <FeatureCard title="Outdoor Ultimate" icon="disc" to="trainings" eyebrow="Sunday and Monday evenings">
+    Biot on Sundays, Antibes on Mondays: two evenings open to everyone, from the basics to team play.
+  </FeatureCard>
+  <FeatureCard title="Lunchtime indoor" icon="clock" to="trainings" eyebrow="Tuesday and Friday">
+    A sporty lunch break at the Saint-Claude gym, from 12:15 to 1:30 pm.
+  </FeatureCard>
+  <FeatureCard title="Youth section" icon="users" to="trainings" eyebrow="Thursday evening · ages 13–17">
+    A dedicated session for teenagers at the Paul Charpin stadium, led by our coaches.
+  </FeatureCard>
+  <FeatureCard title="Disc Golf" icon="map-pin" to="disc-golf" eyebrow="Valmasque and Vaugrenier">
+    A basket, discs and trips to the courses of the region to sharpen your aim.
+  </FeatureCard>
+</FeatureGrid>
+</Band>
+
+<Band tone="navy">
+## Competing across France
+
+The Ziggles take part in the national leagues and you will find us at many tournaments throughout the year. These championships are open to every licensed player, women and men, subject to selection by the club’s coaches.
+
+- **Indoor N3** – team 1
+- **Indoor DR2** – team 2
+- **Outdoor Open N3**
+</Band>
+
+<Band tone="white">
+## Ultimate in one minute
+
+Ultimate is played with a flying disc, seven against seven outdoors and five a side indoors: you score by catching the disc in the opponents’ end zone. Mixed and non-contact, it has no referee: players call their own fouls, in the Spirit of the Game.
+
+Our veterans explain the basics in this “collector” clip, broadcast in {SITE.introVideo.year} on the French TV channel M6 (in French).
+
+<VideoFacade youtubeId={SITE.introVideo.youtubeId} title="The Ziggles introduce Ultimate on M6 (2004, in French)" poster={teamPhoto} />
+</Band>
+
+<Band>
+## Join the Ziggles
+
+Membership includes the federation licence and its insurance, with €50 off for Pass’Sport holders. Questions about the youth section? Write to <a href={`mailto:${SITE.emails.youthCoaches}`}>{SITE.emails.youthCoaches}</a>.
+
+<ButtonLink to="membership">Prices and membership</ButtonLink> <ButtonLink to="contact" variant="secondary">Write to us</ButtonLink>
+</Band>

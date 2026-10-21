@@ -1,0 +1,33 @@
+{
+  "name": "ziggles-website",
+  "private": true,
+  "description": "Website of Les Ziggles, Ultimate & Disc Golf club in Antibes",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "check:site": "node scripts/check-site.mjs",
+    "verify": "astro check && astro build && node scripts/check-site.mjs",
+    "brand": "node scripts/build-brand-assets.mjs",
+    "typography": "node scripts/french-spacing.mjs src/content/pages/fr/*.mdx src/i18n/ui.ts",
+    "deploy": "sh deploy/deploy.sh"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^8.1.0",
+    "@astrojs/sitemap": "^3.7.4",
+    "@fontsource-variable/figtree": "^5.3.0",
+    "astro": "^7.4.1",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.11",
+    "typescript": "^6"
+  }
+}

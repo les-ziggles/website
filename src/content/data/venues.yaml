@@ -1,0 +1,30 @@
+# Where the club plays. Referenced by id from training-sessions.yaml.
+- id: gymnase-saint-claude
+  name: Gymnase Saint-Claude
+  city: Antibes
+  mapUrl: https://www.google.com/maps/search/?api=1&query=Gymnase+Saint-Claude+Antibes
+
+- id: stade-paul-charpin
+  name: Stade Paul Charpin (Les Semboules)
+  city: Antibes
+  mapUrl: https://www.google.com/maps/search/?api=1&query=Stade+Paul+Charpin+Antibes
+
+- id: stade-pierre-bel
+  name: Stade Pierre Bel (complexe Pierre Operto)
+  city: Biot
+  mapUrl: https://www.google.com/maps/search/?api=1&query=Stade+Pierre+Bel+Biot
+
+- id: stade-de-la-fontonne
+  name: Stade de la Fontonne
+  city: Antibes
+  mapUrl: https://www.google.com/maps/search/?api=1&query=Stade+de+la+Fontonne+Antibes
+
+- id: foret-de-la-valmasque
+  name: Forêt de la Valmasque
+  city: Antibes
+  mapUrl: https://www.google.com/maps/search/?api=1&query=For%C3%AAt+de+la+Valmasque
+
+- id: parc-de-vaugrenier
+  name: Parc départemental de Vaugrenier
+  city: Villeneuve-Loubet
+  mapUrl: https://www.google.com/maps/search/?api=1&query=Parc+de+Vaugrenier

@@ -1,0 +1,18 @@
+---
+// Responsive grid of <FeatureCard> items.
+---
+
+<ul class="feature-grid" role="list">
+  <slot />
+</ul>
+
+<style>
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+    gap: var(--space-m);
+    margin-block: var(--space-l);
+    padding: 0;
+    list-style: none;
+  }
+</style>

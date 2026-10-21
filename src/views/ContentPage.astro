@@ -1,0 +1,64 @@
+---
+// Renders a page of the `pages` collection: the home page or a standard inner page,
+// with its SEO metadata and page-specific structured data.
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HomeHero from '../components/home/HomeHero.astro';
+import PageHeader from '../components/site/PageHeader.astro';
+import Prose from '../components/content/Prose.astro';
+import { mdxComponents } from '../components/content';
+import type { Locale } from '../i18n/locales';
+import type { RouteKey } from '../i18n/routes';
+import type { PageEntry } from '../lib/pages';
+import { breadcrumb, membershipOffers, trainingEvents, webPage } from '../lib/structured-data';
+
+interface Props {
+  page: PageEntry;
+  routeKey: RouteKey;
+  locale: Locale;
+}
+
+const { page, routeKey, locale } = Astro.props;
+const { title, lede, seo, cover } = page.data;
+const { Content } = await render(page);
+
+const isHome = routeKey === 'home';
+const structuredData = [webPage(routeKey, locale, seo.title, seo.description)];
+if (!isHome) structuredData.push(breadcrumb(routeKey, locale, title));
+if (routeKey === 'trainings') structuredData.push(...(await trainingEvents(locale, 'ultimate')));
+if (routeKey === 'disc-golf') structuredData.push(...(await trainingEvents(locale, 'disc-golf')));
+if (routeKey === 'membership') structuredData.push(await membershipOffers(locale));
+---
+
+<BaseLayout
+  locale={locale}
+  routeKey={routeKey}
+  title={seo.title}
+  description={seo.description}
+  socialImage={cover && { src: cover.image, alt: cover.alt }}
+  structuredData={structuredData}
+>
+  {
+    isHome ? (
+      <>
+        <HomeHero locale={locale} title={title} lede={lede} />
+        <Content components={mdxComponents} />
+      </>
+    ) : (
+      <>
+        <PageHeader locale={locale} routeKey={routeKey} title={title} lede={lede} cover={cover} />
+        <div class="content-page__body page-width">
+          <Prose>
+            <Content components={mdxComponents} />
+          </Prose>
+        </div>
+      </>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .content-page__body {
+    padding-top: var(--space-xl);
+  }
+</style>

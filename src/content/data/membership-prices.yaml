@@ -1,0 +1,28 @@
+# Membership prices (licence FFFD + club contribution). Update every season.
+- id: competition
+  season: 2026-2027
+  label: { fr: "Ultimate ou Disc Golf – compétition", en: "Ultimate or Disc Golf – competition" }
+  amount: 135
+
+- id: leisure-adult
+  season: 2026-2027
+  label: { fr: "Ultimate ou Disc Golf – loisir adulte", en: "Ultimate or Disc Golf – adult leisure" }
+  amount: 100
+
+- id: youth-13-14
+  season: 2026-2027
+  label: { fr: "Ultimate jeune (13–14 ans)", en: "Youth Ultimate (age 13–14)" }
+  amount: 50
+  freeWithPassSport: true
+
+- id: youth-15-17
+  season: 2026-2027
+  label: { fr: "Ultimate jeune (15–17 ans)", en: "Youth Ultimate (age 15–17)" }
+  amount: 65
+  freeWithPassSport: true
+
+- id: disc-golf-supplement
+  season: 2026-2027
+  label: { fr: "Supplément Disc Golf (en plus d’une licence Ultimate)", en: "Disc Golf supplement (on top of an Ultimate licence)" }
+  amount: 21
+  supplement: true

@@ -1,0 +1,73 @@
+---
+// Top of inner pages: breadcrumb, title, introduction and optional cover image.
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import Breadcrumb from './Breadcrumb.astro';
+import type { Locale } from '../../i18n/locales';
+import type { RouteKey } from '../../i18n/routes';
+
+interface Props {
+  locale: Locale;
+  routeKey: RouteKey;
+  title: string;
+  lede?: string;
+  cover?: { image: ImageMetadata; alt: string };
+}
+
+const { locale, routeKey, title, lede, cover } = Astro.props;
+---
+
+<header class:list={['page-header', 'on-dark', { 'page-header--with-cover': cover }]}>
+  <div class="page-header__inner page-width">
+    <div class="page-header__text">
+      <Breadcrumb locale={locale} routeKey={routeKey} current={title} />
+      <h1 class="page-header__title">{title}</h1>
+      {lede && <p class="page-header__lede">{lede}</p>}
+    </div>
+    {
+      cover && (
+        <Image class="page-header__cover" src={cover.image} alt={cover.alt} width={560} densities={[1.5, 2]} loading="eager" fetchpriority="high" />
+      )
+    }
+  </div>
+</header>
+
+<style>
+  .page-header {
+    padding-block: var(--space-xl);
+    background:
+      radial-gradient(ellipse 60% 80% at 100% 0%, color-mix(in oklab, var(--ziggles-sea), transparent 40%), transparent 70%),
+      var(--ziggles-navy);
+    border-bottom: 3px solid var(--ziggles-gold);
+  }
+
+  .page-header__inner {
+    display: grid;
+    gap: var(--space-l);
+    align-items: center;
+  }
+
+  .page-header__text > * + * {
+    margin-top: var(--space-s);
+  }
+
+  .page-header__lede {
+    max-width: 40rem;
+    font-size: var(--font-size-lead);
+    color: var(--color-text-muted);
+  }
+
+  .page-header__cover {
+    width: 100%;
+    max-height: 22rem;
+    object-fit: cover;
+    border-radius: var(--radius-l);
+    box-shadow: 0 20px 40px rgb(0 0 0 / 0.3);
+  }
+
+  @media (min-width: 56rem) {
+    .page-header--with-cover .page-header__inner {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+</style>

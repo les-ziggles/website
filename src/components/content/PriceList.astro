@@ -1,0 +1,90 @@
+---
+// Membership prices of the season, from src/content/data/membership-prices.yaml.
+import { getCollection } from 'astro:content';
+import { resolveLocale } from '../../i18n/locales';
+import { useTranslations } from '../../i18n/ui';
+import { formatPrice } from '../../lib/format';
+
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const prices = await getCollection('prices');
+const season = prices[0]?.data.season;
+---
+
+<table class="price-list">
+  <caption class="visually-hidden">{t('pricing.season').replace('{season}', season ?? '')}</caption>
+  <thead>
+    <tr>
+      <th scope="col">{t('pricing.licence')}</th>
+      <th scope="col" class="price-list__amount">{t('pricing.price')}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {
+      prices.map(({ data }) => (
+        <tr class:list={{ 'price-list__row--supplement': data.supplement }}>
+          <th scope="row">{data.label[locale]}</th>
+          <td class="price-list__amount">
+            <strong>{data.supplement ? `+ ${formatPrice(data.amount, locale)}` : formatPrice(data.amount, locale)}</strong>
+            {data.freeWithPassSport && <span class="price-list__free">{t('pricing.free')}</span>}
+          </td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+
+<style>
+  .price-list {
+    width: 100%;
+    margin-block: var(--space-l);
+    border-collapse: collapse;
+    border-radius: var(--radius-m);
+    overflow: hidden;
+    background: var(--ziggles-white);
+    box-shadow: var(--shadow-card);
+  }
+
+  .price-list th,
+  .price-list td {
+    padding: var(--space-s) var(--space-m);
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--ziggles-sand);
+  }
+
+  .price-list thead th {
+    background: var(--ziggles-navy);
+    color: var(--ziggles-white);
+    font-family: var(--font-headline);
+    font-size: var(--font-size-small);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .price-list tbody th {
+    font-weight: 500;
+  }
+
+  .price-list__amount {
+    text-align: right !important;
+    white-space: nowrap;
+  }
+
+  .price-list__amount strong {
+    font-family: var(--font-headline);
+    font-weight: 700;
+    font-size: 1.15rem;
+  }
+
+  .price-list__free {
+    display: block;
+    font-size: var(--font-size-small);
+    color: var(--ziggles-red);
+    white-space: normal;
+  }
+
+  .price-list__row--supplement {
+    background: var(--ziggles-sand);
+  }
+</style>

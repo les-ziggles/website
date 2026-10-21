@@ -1,0 +1,48 @@
+---
+// "Home › Page" trail shown above inner page titles (mirrors the BreadcrumbList structured data).
+import type { Locale } from '../../i18n/locales';
+import { pathFor, type RouteKey } from '../../i18n/routes';
+import { useTranslations } from '../../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  routeKey: RouteKey;
+  current: string;
+}
+
+const { locale, routeKey, current } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<nav class="breadcrumb" aria-label={t('a11y.breadcrumb')}>
+  <ol class="breadcrumb__list">
+    <li><a href={pathFor('home', locale)}>{t('nav.home')}</a></li>
+    <li><a href={pathFor(routeKey, locale)} aria-current="page">{current}</a></li>
+  </ol>
+</nav>
+
+<style>
+  .breadcrumb__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    padding: 0;
+    list-style: none;
+    font-size: var(--font-size-small);
+  }
+
+  .breadcrumb__list li + li::before {
+    content: '›';
+    margin-right: var(--space-xs);
+    color: var(--color-text-muted);
+  }
+
+  .breadcrumb a {
+    color: var(--color-text-muted);
+  }
+
+  .breadcrumb a[aria-current='page'] {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+</style>

@@ -1,0 +1,182 @@
+---
+// Site footer: palm trees in the breeze, club details, links, contact and social accounts.
+import AnimationToggle from '../brand/AnimationToggle.astro';
+import BrandMark from '../brand/BrandMark.astro';
+import PalmGrove from '../brand/PalmGrove.astro';
+import Icon from '../ui/Icon.astro';
+import { SITE } from '../../site.config';
+import type { Locale } from '../../i18n/locales';
+import { pathFor, type RouteKey } from '../../i18n/routes';
+import { FOOTER_NAV, navLabel, useTranslations } from '../../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  routeKey?: RouteKey;
+}
+
+const { locale, routeKey } = Astro.props;
+const t = useTranslations(locale);
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <PalmGrove />
+  <div class="site-footer__body on-dark">
+    <div class="site-footer__columns page-width">
+      <section class="site-footer__club">
+        <BrandMark locale={locale} size="large" />
+        <p class="site-footer__about">
+          {t('footer.about').replace('{year}', String(SITE.foundingYear))}
+        </p>
+        <p class="site-footer__affiliation">{t('footer.affiliation')}</p>
+      </section>
+
+      <nav class="site-footer__links" aria-label={t('a11y.footerNav')}>
+        <h2 class="site-footer__heading">{t('footer.explore')}</h2>
+        <ul class="site-footer__list">
+          {
+            FOOTER_NAV.map((key) => (
+              <li>
+                <a href={pathFor(key, locale)} aria-current={key === routeKey ? 'page' : undefined}>
+                  {t(navLabel(key))}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <section class="site-footer__contact">
+        <h2 class="site-footer__heading">{t('footer.contact')}</h2>
+        <ul class="site-footer__list">
+          <li>
+            <a class="site-footer__icon-link" href={`mailto:${SITE.emails.board}`}><Icon name="mail" size={18} />{SITE.emails.board}</a>
+          </li>
+          <li>
+            <a class="site-footer__icon-link" href={`mailto:${SITE.emails.youthCoaches}`}><Icon name="users" size={18} />{SITE.emails.youthCoaches}</a>
+          </li>
+        </ul>
+        <h2 class="site-footer__heading">{t('footer.followUs')}</h2>
+        <ul class="site-footer__social">
+          <li>
+            <a class="site-footer__social-link" href={SITE.social.facebook} rel="me noopener">
+              <Icon name="facebook" size={22} label="Facebook" />
+            </a>
+          </li>
+          <li>
+            <a class="site-footer__social-link" href={SITE.social.x} rel="me noopener">
+              <Icon name="x" size={20} label="X (Twitter)" />
+            </a>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="site-footer__legal page-width">
+      <p>© {year} {SITE.name} · {t('footer.madeIn')}</p>
+      <AnimationToggle locale={locale} />
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--space-2xl);
+  }
+
+  .site-footer__body {
+    background: var(--ziggles-navy);
+    padding-block: var(--space-xl) var(--space-l);
+    border-top: 3px solid var(--ziggles-gold);
+  }
+
+  .site-footer__columns {
+    display: grid;
+    gap: var(--space-xl);
+    grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+  }
+
+  .site-footer__about {
+    margin-top: var(--space-m);
+    max-width: 30ch;
+    color: var(--color-text-muted);
+  }
+
+  .site-footer__affiliation {
+    margin-top: var(--space-s);
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
+  }
+
+  .site-footer__heading {
+    margin-bottom: var(--space-s);
+    font-size: 0.95rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ziggles-gold);
+  }
+
+  .site-footer__heading:not(:first-child) {
+    margin-top: var(--space-l);
+  }
+
+  .site-footer__list {
+    display: grid;
+    gap: var(--space-xs);
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-footer__list a {
+    color: var(--color-on-dark);
+    text-decoration: none;
+  }
+
+  .site-footer__list a:hover,
+  .site-footer__list a[aria-current='page'] {
+    color: var(--ziggles-gold);
+    text-decoration: underline;
+  }
+
+  .site-footer__icon-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    overflow-wrap: anywhere;
+  }
+
+  .site-footer__social {
+    display: flex;
+    gap: var(--space-s);
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-footer__social-link {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid color-mix(in oklab, var(--ziggles-gold), transparent 50%);
+    border-radius: 50%;
+    color: var(--color-on-dark);
+  }
+
+  .site-footer__social-link:hover {
+    color: var(--ziggles-navy);
+    background: var(--ziggles-gold);
+  }
+
+  .site-footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    margin-top: var(--space-xl);
+    padding-top: var(--space-m);
+    border-top: 1px solid color-mix(in oklab, var(--ziggles-white), transparent 85%);
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
+  }
+</style>

@@ -1,0 +1,48 @@
+---
+// Not-found page. One file serves every URL (CloudFront error document), so it speaks both languages.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ButtonLink from '../components/content/ButtonLink.astro';
+import { useTranslations } from '../i18n/ui';
+
+const fr = useTranslations('fr');
+const en = useTranslations('en');
+---
+
+<BaseLayout locale="fr" title={`${fr('notFound.title')} · Les Ziggles`} description={fr('notFound.text')} noindex>
+  <div class="not-found page-width">
+    <p class="not-found__code" aria-hidden="true">404</p>
+    <section class="not-found__message">
+      <h1>{fr('notFound.title')}</h1>
+      <p>{fr('notFound.text')}</p>
+      <ButtonLink href="/">{fr('notFound.back')}</ButtonLink>
+    </section>
+    <section class="not-found__message" lang="en-GB">
+      <h2>{en('notFound.title')}</h2>
+      <p>{en('notFound.text')}</p>
+      <ButtonLink href="/en/" variant="secondary">{en('notFound.back')}</ButtonLink>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: grid;
+    gap: var(--space-xl);
+    padding-block: var(--space-2xl);
+  }
+
+  .not-found__code {
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 3rem + 10vw, 10rem);
+    line-height: 1;
+    color: var(--ziggles-red);
+  }
+
+  .not-found__message > * + * {
+    margin-top: var(--space-s);
+  }
+
+  .not-found__message p {
+    max-width: 40rem;
+  }
+</style>

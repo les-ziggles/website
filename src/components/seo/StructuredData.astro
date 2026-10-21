@@ -1,0 +1,12 @@
+---
+// Renders schema.org JSON-LD. JSON data blocks are not executed, so they need no CSP hash.
+import { graph } from '../../lib/structured-data';
+
+interface Props {
+  nodes: Record<string, unknown>[];
+}
+
+const json = JSON.stringify(graph(Astro.props.nodes)).replace(/</g, '\\u003c');
+---
+
+<script type="application/ld+json" is:inline set:html={json} />

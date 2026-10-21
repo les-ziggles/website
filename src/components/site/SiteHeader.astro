@@ -1,0 +1,192 @@
+---
+// Site header: brand, main navigation and language switcher.
+// On small screens the menu is a native popover (works without JavaScript).
+import BrandMark from '../brand/BrandMark.astro';
+import Icon from '../ui/Icon.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import type { Locale } from '../../i18n/locales';
+import { pathFor, type RouteKey } from '../../i18n/routes';
+import { MAIN_NAV, navLabel, useTranslations } from '../../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  routeKey?: RouteKey;
+}
+
+const { locale, routeKey } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<header class="site-header on-dark">
+  <a class="site-header__skip-link" href="#main-content">{t('a11y.skipToContent')}</a>
+  <div class="site-header__bar page-width">
+    <a class="site-header__home" href={pathFor('home', locale)} aria-label={t('a11y.homeLink')}>
+      <BrandMark locale={locale} loading="eager" />
+    </a>
+
+    <button class="site-header__menu-button" type="button" popovertarget="site-menu" aria-label={t('a11y.openMenu')}>
+      <Icon name="menu" size={26} />
+    </button>
+
+    <div class="site-menu" id="site-menu" popover>
+      <button class="site-menu__close" type="button" popovertarget="site-menu" popovertargetaction="hide">
+        <Icon name="close" size={26} label={t('a11y.closeMenu')} />
+      </button>
+      <nav class="site-menu__nav" aria-label={t('a11y.mainNav')}>
+        <ul class="site-menu__list">
+          {
+            MAIN_NAV.map((key) => (
+              <li>
+                <a class="site-menu__link" href={pathFor(key, locale)} aria-current={key === routeKey ? 'page' : undefined}>
+                  {t(navLabel(key))}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <LanguageSwitcher locale={locale} routeKey={routeKey} />
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in oklab, var(--ziggles-navy), transparent 6%);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid color-mix(in oklab, var(--ziggles-gold), transparent 70%);
+  }
+
+  .site-header__skip-link {
+    position: absolute;
+    left: var(--space-m);
+    top: var(--space-xs);
+    padding: var(--space-xs) var(--space-m);
+    background: var(--ziggles-gold);
+    color: var(--ziggles-navy);
+    font-weight: 700;
+    border-radius: var(--radius-s);
+    transform: translateY(-200%);
+  }
+
+  .site-header__skip-link:focus {
+    transform: none;
+  }
+
+  .site-header__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    min-height: 4.5rem;
+  }
+
+  .site-header__home {
+    text-decoration: none;
+    border-radius: var(--radius-s);
+  }
+
+  .site-header__menu-button,
+  .site-menu__close {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border: 0;
+    border-radius: var(--radius-s);
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+  }
+
+  /* Small screens: full-height sheet opened from the menu button. */
+  .site-menu {
+    inset: 0 0 0 auto;
+    width: min(22rem, 100%);
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: var(--space-m) var(--space-l) var(--space-xl);
+    border: 0;
+    background: var(--ziggles-navy);
+    color: var(--color-on-dark);
+    box-shadow: -12px 0 40px rgb(0 0 0 / 0.35);
+  }
+
+  .site-menu:popover-open {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-l);
+  }
+
+  .site-menu::backdrop {
+    background: rgb(4 12 54 / 0.55);
+  }
+
+  .site-menu__close {
+    align-self: flex-end;
+    color: var(--color-on-dark);
+  }
+
+  .site-menu__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-menu__link {
+    display: block;
+    padding: var(--space-s) var(--space-xs);
+    font-family: var(--font-headline);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--color-on-dark);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+  }
+
+  .site-menu__link:hover,
+  .site-menu__link[aria-current='page'] {
+    color: var(--ziggles-gold);
+  }
+
+  .site-menu__link[aria-current='page'] {
+    border-bottom-color: var(--ziggles-gold);
+  }
+
+  /* Wide screens: the menu sits inline in the header bar. */
+  @media (min-width: 56rem) {
+    .site-header__menu-button,
+    .site-menu__close {
+      display: none;
+    }
+
+    .site-menu {
+      position: static;
+      display: flex;
+      align-items: center;
+      gap: var(--space-l);
+      width: auto;
+      height: auto;
+      padding: 0;
+      background: none;
+      box-shadow: none;
+      overflow: visible;
+    }
+
+    .site-menu__list {
+      flex-direction: row;
+      gap: var(--space-xs);
+    }
+
+    .site-menu__link {
+      font-size: 1rem;
+      padding: var(--space-xs) var(--space-s);
+    }
+  }
+</style>

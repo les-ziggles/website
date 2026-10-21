@@ -1,0 +1,50 @@
+---
+// Full-width section of the home page with its own background.
+interface Props {
+  tone?: 'sand' | 'white' | 'navy';
+  /** Accessible name of the section, usually the id of its heading. */
+  labelledby?: string;
+}
+
+const { tone = 'sand', labelledby } = Astro.props;
+---
+
+<section class:list={['band', `band--${tone}`, { 'on-dark': tone === 'navy' }]} aria-labelledby={labelledby}>
+  <div class="band__inner page-width">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .band {
+    padding-block: var(--space-2xl);
+  }
+
+  .band--white {
+    background: var(--ziggles-white);
+  }
+
+  .band--navy {
+    background:
+      radial-gradient(ellipse at 80% 0%, color-mix(in oklab, var(--ziggles-sea), transparent 40%), transparent 60%),
+      var(--ziggles-navy);
+  }
+
+  .band__inner > :global(* + *) {
+    margin-top: var(--space-m);
+  }
+
+  .band__inner > :global(h2) {
+    max-width: 30ch;
+  }
+
+  .band__inner > :global(p) {
+    max-width: var(--text-width);
+    font-size: var(--font-size-lead);
+  }
+
+  .band__inner > :global(ul:not([role])) {
+    max-width: var(--text-width);
+    padding-left: 1.2em;
+  }
+</style>

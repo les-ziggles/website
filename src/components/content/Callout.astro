@@ -1,0 +1,38 @@
+---
+// Highlighted note inside page content.
+interface Props {
+  tone?: 'info' | 'important';
+  title?: string;
+}
+
+const { tone = 'info', title } = Astro.props;
+---
+
+<aside class:list={['callout', `callout--${tone}`]}>
+  {title && <p class="callout__title">{title}</p>}
+  <div class="callout__body"><slot /></div>
+</aside>
+
+<style>
+  .callout {
+    margin-block: var(--space-l);
+    padding: var(--space-m) var(--space-l);
+    border-left: 4px solid var(--ziggles-gold);
+    border-radius: var(--radius-s);
+    background: var(--ziggles-white);
+  }
+
+  .callout--important {
+    border-left-color: var(--ziggles-red);
+  }
+
+  .callout__title {
+    font-family: var(--font-headline);
+    font-weight: 700;
+    margin-bottom: var(--space-2xs);
+  }
+
+  .callout__body > :global(* + *) {
+    margin-top: var(--space-xs);
+  }
+</style>

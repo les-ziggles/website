@@ -1,0 +1,78 @@
+---
+title: Inscription en ligne
+lede: Depuis la rentrée 2024, l’inscription se fait directement sur l’espace licencié de la fédération. Voici les étapes, pas à pas.
+seo:
+  title: Guide d’inscription en ligne sur l’espace FFFD | Les Ziggles
+  description: "Pas à pas pour prendre ta licence Ultimate ou Disc Golf aux Ziggles sur l’espace licencié de la FFFD : compte, licence, certificat médical et paiement."
+---
+
+import { SITE } from '../../../site.config';
+import loginScreen from '../../../assets/images/registration/registration-fffd-login.png';
+import licenceNumberEmail from '../../../assets/images/registration/registration-licence-number-email.jpg';
+import memberDashboard from '../../../assets/images/registration/registration-member-dashboard.jpg';
+import insuranceToggle from '../../../assets/images/registration/registration-insurance-toggle.png';
+import medicalCertificateStatus from '../../../assets/images/registration/registration-medical-certificate-status.png';
+import paymentEmail from '../../../assets/images/registration/registration-payment-email.png';
+
+<Callout title="Surveille tes spams">
+Plusieurs étapes passent par des e-mails de la fédération, qui ont une fâcheuse tendance à finir dans les indésirables. Pense à les consulter !
+</Callout>
+
+<ButtonLink href={SITE.federation.memberSpaceUrl}>Ouvrir l’espace licencié FFFD</ButtonLink>
+
+## 1. Se connecter
+
+<ContentImage src={loginScreen} width={360} frame alt="Page de connexion de l’espace licencié FFFD : champs identifiant et mot de passe, bouton « Me connecter » et bouton « Première visite sur FFFD ou création de compte »" />
+
+### Tu as déjà été licencié
+
+Tu as normalement déjà des accès. Ton identifiant est ton numéro de licence, un code à 6 chiffres : retrouve-le dans les e-mails reçus de la FFFD les années précédentes.
+
+<ContentImage src={licenceNumberEmail} width={560} frame alt="E-mail « Licence dématérialisée » de la FFFD dans lequel le numéro de licence à six chiffres, qui sert d’identifiant, est encadré en rouge" />
+
+Introuvable ? Un membre du bureau peut te le retrouver. Mot de passe oublié ? Le lien « Mot de passe oublié » fonctionne très bien.
+
+### C’est ta première licence
+
+Clique sur « Première visite sur FFFD ou création de compte », puis sur « Création de compte ». Laisse-toi guider jusqu’à arriver sur la page d’accueil de ton espace.
+
+## 2. Prendre la licence
+
+Une fois connecté, clique sur le bouton « **Prendre une licence** ».
+
+<ContentImage src={memberDashboard} width={720} frame alt="Page d’accueil de l’espace licencié FFFD : une flèche rouge désigne le bouton violet « Prendre une licence » sous la photo de profil" />
+
+Sélectionne le club « **006001 – Les Ziggles** », confirme tes informations puis choisis le type de licence :
+
+- **Joueur compétition** si tu penses nous accompagner en championnat d’Ultimate ou en compétition de Disc Golf cette année ;
+- **Joueur loisir** si tu veux simplement participer aux entraînements d’Ultimate ou au Disc Golf.
+
+Pour une licence Ultimate + Disc Golf, choisis ta licence d’Ultimate et contacte le bureau pour qu’il ajoute la partie Disc Golf.
+
+Laisse l’**assurance I.A.** activée : elle ne coûte que 1 € et t’évite de grosses complications selon les activités que tu feras pendant l’année.
+
+<ContentImage src={insuranceToggle} width={347} frame alt="Rubrique « Informations complémentaires » avec l’option « Assurance I.A. » activée sur « Avec »" />
+
+Tu peux aussi ajouter l’assurance IA Sport+ pour 11,34 €. En revanche, ne coche pas « Encadrant » ni « Dirigeant ».
+
+## 3. Certificat médical
+
+Le site de la fédération t’indique si ton certificat médical est toujours valable ou s’il faut en refaire un. Si tout est en ordre, tu verras cet encadré :
+
+<ContentImage src={medicalCertificateStatus} width={560} frame alt="Encadré vert « Vous disposez au moins d’un certificat médical en cours de validité », avec le choix entre l’attestation du questionnaire de santé et la demande d’un nouveau certificat" />
+
+Sinon, fais établir un certificat **en respectant le <a href={SITE.medicalCertificateTemplateUrl}>modèle du club</a>** : c’est indispensable, la fédération refuse les autres.
+
+## 4. Validation et paiement
+
+Une fois le formulaire envoyé, une pré-demande de licence arrive à notre secrétariat, qui la valide à la main. Tu reçois alors un e-mail pour payer par carte bancaire sur le site de la fédération (vérifie tes spams !).
+
+<ContentImage src={paymentEmail} width={460} frame caption="E-mail reçu après validation : il ne reste plus qu’à payer la licence en suivant le lien." alt="E-mail « Paiement de votre licence » de la FFFD confirmant que la demande pour la structure 006001 – Les Ziggles a été validée, avec le lien vers l’espace personnel" />
+
+<Callout tone="important" title="Erreur au premier paiement ?">
+Clique sur « Réessayer » et fais un deuxième essai avec la même carte.
+</Callout>
+
+## Une question ?
+
+Consulte le <a href={SITE.licenceGuidePdfUrl}>guide de demande de licence de la fédération (PDF)</a>, ou contacte le bureau sur WhatsApp ou à <a href={`mailto:${SITE.emails.board}`}>{SITE.emails.board}</a>.

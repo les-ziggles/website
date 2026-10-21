@@ -1,0 +1,80 @@
+---
+// A link styled as a button. Internal links take a route key, external ones an href.
+import Icon from '../ui/Icon.astro';
+import { resolveLocale } from '../../i18n/locales';
+import { pathFor, type RouteKey } from '../../i18n/routes';
+import { isExternal } from '../../lib/urls';
+
+interface Props {
+  /** Page of the site (resolved in the current language)… */
+  to?: RouteKey;
+  /** …or any URL. */
+  href?: string;
+  variant?: 'primary' | 'secondary' | 'light';
+}
+
+const { to, href, variant = 'primary' } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
+const target = to ? pathFor(to, locale) : href;
+if (!target) throw new Error('<ButtonLink> needs a `to` route key or an `href`');
+const external = isExternal(target);
+---
+
+<a class:list={['button-link', `button-link--${variant}`]} href={target} rel={external ? 'noopener' : undefined}>
+  <slot />
+  <Icon name={external ? 'external' : 'arrow-right'} size={18} />
+</a>
+
+<style>
+  .button-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    min-height: 3rem;
+    padding: var(--space-s) var(--space-l);
+    border: 2px solid transparent;
+    border-radius: 999px;
+    font-family: var(--font-headline);
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.2;
+    text-decoration: none;
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast),
+      transform var(--transition-fast);
+  }
+
+  .button-link:hover {
+    transform: translateY(-1px);
+  }
+
+  .button-link--primary {
+    background: var(--ziggles-red);
+    color: var(--ziggles-white);
+  }
+
+  .button-link--primary:hover {
+    background: var(--ziggles-red-dark);
+    color: var(--ziggles-white);
+  }
+
+  .button-link--secondary {
+    border-color: currentColor;
+    color: var(--color-text);
+  }
+
+  .button-link--secondary:hover {
+    color: var(--color-link);
+  }
+
+  .button-link--light {
+    background: var(--ziggles-gold);
+    color: var(--ziggles-navy);
+  }
+
+  .button-link--light:hover {
+    background: var(--ziggles-white);
+    color: var(--ziggles-navy);
+  }
+</style>

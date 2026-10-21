@@ -1,0 +1,23 @@
+---
+// Logos of partners and programmes. Their alt text is the partner's name and is not translated.
+import ContentImage from './ContentImage.astro';
+import passSportPoster from '../../assets/images/partners/partner-pass-sport-poster.jpg';
+
+const PARTNERS = {
+  'pass-sport': { src: passSportPoster, alt: 'Pass’Sport – Ici on prend le Pass Sport', width: 320 },
+} as const;
+
+interface Props {
+  partner: keyof typeof PARTNERS;
+}
+
+const { src, alt, width } = PARTNERS[Astro.props.partner];
+---
+
+<ContentImage class="partner-logo" src={src} alt={alt} width={width} />
+
+<style>
+  .partner-logo {
+    max-width: 20rem;
+  }
+</style>

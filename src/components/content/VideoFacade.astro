@@ -1,0 +1,115 @@
+---
+// YouTube video that only loads (from youtube-nocookie.com) after the visitor clicks play.
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import Icon from '../ui/Icon.astro';
+import { resolveLocale } from '../../i18n/locales';
+import { useTranslations } from '../../i18n/ui';
+
+interface Props {
+  youtubeId: string;
+  title: string;
+  /** Poster shown before loading; decorative (the button carries the title). */
+  poster: ImageMetadata;
+}
+
+const { youtubeId, title, poster } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+---
+
+<figure class="video-facade-figure">
+  <div class="video-facade" data-video-facade data-video-id={youtubeId} data-video-title={title}>
+    <Image class="video-facade__poster" src={poster} alt="" width={800} densities={[1.5, 2]} />
+    <button class="video-facade__play" type="button">
+      <span class="video-facade__icon"><Icon name="play" size={30} /></span>
+      <span class="video-facade__label">{t('video.play')}</span>
+      <span class="video-facade__title">{title}</span>
+    </button>
+  </div>
+  <figcaption class="video-facade__privacy">{t('video.privacy')}</figcaption>
+</figure>
+
+<script>
+  import { initVideoFacades } from '../../scripts/video-facade';
+  initVideoFacades();
+</script>
+
+<style>
+  .video-facade-figure {
+    max-width: 48rem;
+    margin-block: var(--space-l);
+  }
+
+  .video-facade {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-m);
+    overflow: hidden;
+    background: var(--ziggles-navy);
+    box-shadow: var(--shadow-card);
+  }
+
+  .video-facade__poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.55;
+  }
+
+  .video-facade__play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-s);
+    padding: var(--space-m);
+    border: 0;
+    background: linear-gradient(to top, rgb(4 12 54 / 0.85), rgb(4 12 54 / 0.2));
+    color: var(--ziggles-white);
+    font-family: var(--font-headline);
+    font-weight: 700;
+    font-size: var(--font-size-lead);
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .video-facade__icon {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    padding-left: 0.3rem;
+    border-radius: 50%;
+    background: var(--ziggles-red);
+    transition: transform var(--transition-fast);
+  }
+
+  .video-facade__title {
+    font-family: var(--font-body);
+    font-size: var(--font-size-base);
+    color: var(--color-on-dark-muted);
+  }
+
+  .video-facade__play:hover .video-facade__icon {
+    transform: scale(1.08);
+  }
+
+  .video-facade__play:focus-visible {
+    outline-offset: -6px;
+  }
+
+  .video-facade :global(.video-facade__player) {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .video-facade__privacy {
+    margin-top: var(--space-xs);
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
+  }
+</style>

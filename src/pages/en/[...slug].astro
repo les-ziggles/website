@@ -1,0 +1,10 @@
+---
+// English pages: /en/, /en/trainings/, /en/membership/, …
+import ContentPage from '../../views/ContentPage.astro';
+import { pageStaticPaths } from '../../lib/pages';
+
+export const getStaticPaths = () => pageStaticPaths('en');
+const { page, routeKey, locale } = Astro.props;
+---
+
+<ContentPage page={page} routeKey={routeKey} locale={locale} />

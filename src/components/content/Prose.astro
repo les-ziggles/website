@@ -1,0 +1,60 @@
+---
+// Typography for page text written in MDX (headings, paragraphs, lists, links).
+---
+
+<div class="prose"><slot /></div>
+
+<style>
+  .prose {
+    max-width: var(--text-width);
+  }
+
+  .prose > :global(* + *) {
+    margin-top: var(--space-m);
+  }
+
+  .prose > :global(h2) {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-s);
+    border-top: 2px solid var(--color-border);
+  }
+
+  .prose > :global(h2:first-child) {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .prose > :global(h3) {
+    margin-top: var(--space-l);
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: 1.3em;
+  }
+
+  .prose :global(li + li),
+  .prose :global(li > ul) {
+    margin-top: var(--space-2xs);
+  }
+
+  .prose :global(li::marker) {
+    color: var(--ziggles-red);
+  }
+
+  .prose :global(strong) {
+    font-weight: 700;
+  }
+
+  .prose :global(a) {
+    overflow-wrap: anywhere;
+  }
+
+  /* Wide components may use the full page width. */
+  .prose > :global(.training-schedule),
+  .prose > :global(.feature-grid) {
+    max-width: var(--page-width);
+    width: min(var(--page-width), calc(100vw - 2 * var(--page-gutter)));
+  }
+</style>

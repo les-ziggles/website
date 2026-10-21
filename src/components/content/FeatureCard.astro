@@ -1,0 +1,93 @@
+---
+// Card linking to a page of the site, used in <FeatureGrid>.
+import Icon, { type IconName } from '../ui/Icon.astro';
+import { resolveLocale } from '../../i18n/locales';
+import { pathFor, type RouteKey } from '../../i18n/routes';
+
+interface Props {
+  title: string;
+  icon: IconName;
+  to: RouteKey;
+  /** Short line above the title (e.g. a weekday). */
+  eyebrow?: string;
+}
+
+const { title, icon, to, eyebrow } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
+---
+
+<li class="feature-card">
+  <span class="feature-card__icon"><Icon name={icon} size={26} /></span>
+  {eyebrow && <p class="feature-card__eyebrow">{eyebrow}</p>}
+  <h3 class="feature-card__title">
+    <a class="feature-card__link" href={pathFor(to, locale)}>{title}</a>
+  </h3>
+  <div class="feature-card__text"><slot /></div>
+</li>
+
+<style>
+  .feature-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-l);
+    border-radius: var(--radius-l);
+    background: var(--ziggles-white);
+    box-shadow: var(--shadow-card);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  .feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 2px 4px rgb(4 12 54 / 0.1), 0 16px 32px rgb(4 12 54 / 0.14);
+  }
+
+  .feature-card__icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--ziggles-navy);
+    color: var(--ziggles-gold);
+  }
+
+  .feature-card__eyebrow {
+    font-size: var(--font-size-small);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ziggles-red);
+  }
+
+  .feature-card__title {
+    font-size: 1.25rem;
+  }
+
+  .feature-card__link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* The whole card is clickable through the title link. */
+  .feature-card__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .feature-card__link:focus-visible {
+    outline: none;
+  }
+
+  .feature-card:has(.feature-card__link:focus-visible) {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .feature-card__text {
+    color: var(--color-text-muted);
+  }
+</style>

@@ -1,0 +1,78 @@
+---
+title: Online registration
+lede: Since September 2024, you register directly in the federation’s member space. Here is how, step by step. The federation’s website is in French, so we quote its labels as they appear.
+seo:
+  title: Online Registration Guide for the FFFD Space | Les Ziggles
+  description: "Step-by-step guide to getting your Ultimate or Disc Golf licence with the Ziggles in the FFFD member space: account, licence, medical certificate and payment."
+---
+
+import { SITE } from '../../../site.config';
+import loginScreen from '../../../assets/images/registration/registration-fffd-login.png';
+import licenceNumberEmail from '../../../assets/images/registration/registration-licence-number-email.jpg';
+import memberDashboard from '../../../assets/images/registration/registration-member-dashboard.jpg';
+import insuranceToggle from '../../../assets/images/registration/registration-insurance-toggle.png';
+import medicalCertificateStatus from '../../../assets/images/registration/registration-medical-certificate-status.png';
+import paymentEmail from '../../../assets/images/registration/registration-payment-email.png';
+
+<Callout title="Check your spam folder">
+Several steps rely on emails from the federation, which tend to land in the spam folder. Remember to look there!
+</Callout>
+
+<ButtonLink href={SITE.federation.memberSpaceUrl}>Open the FFFD member space</ButtonLink>
+
+## 1. Sign in
+
+<ContentImage src={loginScreen} width={360} frame alt="Sign-in page of the FFFD member space, in French: username and password fields, a “Me connecter” (sign in) button and a “Première visite sur FFFD ou création de compte” (first visit or create an account) button" />
+
+### You have had a licence before
+
+You should already have access. Your username is your licence number, a 6-digit code: look for it in the emails the FFFD sent you in previous years.
+
+<ContentImage src={licenceNumberEmail} width={560} frame alt="FFFD “Licence dématérialisée” email in which the six-digit licence number, used as the username, is outlined in red" />
+
+Can’t find it? A board member can look it up for you. Forgot your password? The “Mot de passe oublié” (forgotten password) link works well.
+
+### This is your first licence
+
+Click “Première visite sur FFFD ou création de compte”, then “Création de compte” (create an account). Follow the steps until you reach the home page of your space.
+
+## 2. Take out the licence
+
+Once signed in, click the “**Prendre une licence**” (take out a licence) button.
+
+<ContentImage src={memberDashboard} width={720} frame alt="Home page of the FFFD member space: a red arrow points to the purple “Prendre une licence” (take out a licence) button below the profile picture" />
+
+Select the club “**006001 – Les Ziggles**”, confirm your details, then choose the licence type:
+
+- **Joueur compétition** (competition player) if you plan to play Ultimate championships or Disc Golf competitions with us this year;
+- **Joueur loisir** (leisure player) if you simply want to come to Ultimate practice or play Disc Golf.
+
+For an Ultimate + Disc Golf licence, choose your Ultimate licence and ask the board to add the Disc Golf part.
+
+Keep the **I.A. insurance** switched on: it only costs €1 and avoids a lot of paperwork depending on the activities you take part in during the year.
+
+<ContentImage src={insuranceToggle} width={347} frame alt="“Informations complémentaires” (additional information) section with the “Assurance I.A.” option switched to “Avec” (with)" />
+
+You can also add the IA Sport+ insurance for €11.34. Do not tick “Encadrant” (coach) or “Dirigeant” (board member).
+
+## 3. Medical certificate
+
+The federation’s system tells you whether your medical certificate is still valid or whether you need a new one. If everything is in order, you will see this box:
+
+<ContentImage src={medicalCertificateStatus} width={560} frame alt="Green box saying you hold at least one valid medical certificate, with a choice between confirming the health questionnaire and requesting a new certificate" />
+
+Otherwise, get a certificate **using the <a href={SITE.medicalCertificateTemplateUrl}>club’s template</a>**: this is essential, the federation rejects any other.
+
+## 4. Approval and payment
+
+Once you submit the form, a licence pre-request reaches our secretary, who approves it manually. You then receive an email to pay by card on the federation’s website (check your spam!).
+
+<ContentImage src={paymentEmail} width={460} frame caption="Email received after approval: all that is left is to pay for the licence by following the link." alt="FFFD “Paiement de votre licence” (licence payment) email confirming that the request for the club 006001 – Les Ziggles was approved, with a link to the personal space" />
+
+<Callout tone="important" title="Error on the first payment?">
+Click “Réessayer” (try again) and make a second attempt with the same card.
+</Callout>
+
+## Any questions?
+
+Read the <a href={SITE.licenceGuidePdfUrl}>federation’s licence request guide (PDF, in French)</a>, or contact the board on WhatsApp or at <a href={`mailto:${SITE.emails.board}`}>{SITE.emails.board}</a>.

@@ -1,0 +1,129 @@
+---
+// Landing hero: the animated badge next to the club name, introduction and calls to action.
+import AnimatedLogo from '../brand/AnimatedLogo.astro';
+import AnimationToggle from '../brand/AnimationToggle.astro';
+import ButtonLink from '../content/ButtonLink.astro';
+import { SITE } from '../../site.config';
+import type { Locale } from '../../i18n/locales';
+import { useTranslations } from '../../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  lede?: string;
+}
+
+const { locale, title, lede } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<section class="home-hero on-dark" aria-labelledby="home-hero-title">
+  <div class="home-hero__inner page-width">
+    <AnimatedLogo locale={locale} class="home-hero__logo" />
+    <div class="home-hero__text">
+      <p class="home-hero__kicker">{t('home.kicker').replace('{year}', String(SITE.foundingYear))}</p>
+      <h1 class="home-hero__title" id="home-hero-title">{title}</h1>
+      {lede && <p class="home-hero__lede">{lede}</p>}
+      <div class="home-hero__actions">
+        <ButtonLink to="membership">{t('cta.join')}</ButtonLink>
+        <ButtonLink to="trainings" variant="light">{t('cta.trainings')}</ButtonLink>
+      </div>
+      <AnimationToggle locale={locale} class="home-hero__motion" />
+    </div>
+  </div>
+  <svg class="home-hero__shore" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path d="M0 48c120-26 240-26 360 0s240 26 360 0 240-26 360 0 240 26 360 0v32H0z" />
+  </svg>
+</section>
+
+<style>
+  .home-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--space-xl) calc(var(--space-2xl) + 2rem);
+    background:
+      radial-gradient(ellipse 70% 60% at 25% 45%, color-mix(in oklab, var(--ziggles-sea), transparent 35%), transparent 70%),
+      radial-gradient(ellipse 50% 40% at 90% 10%, color-mix(in oklab, var(--ziggles-gold), transparent 85%), transparent 70%),
+      linear-gradient(180deg, var(--ziggles-navy) 0%, var(--ziggles-navy-soft) 100%);
+  }
+
+  .home-hero__inner {
+    display: grid;
+    gap: var(--space-l);
+    align-items: center;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .home-hero__logo {
+    width: min(68vw, 20rem);
+  }
+
+  .home-hero__text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-m);
+  }
+
+  .home-hero__kicker {
+    font-family: var(--font-headline);
+    font-weight: 700;
+    font-size: var(--font-size-small);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ziggles-gold);
+  }
+
+  .home-hero__title {
+    font-size: clamp(2.4rem, 1.6rem + 3.6vw, 4.5rem);
+    max-width: 16ch;
+  }
+
+  .home-hero__lede {
+    max-width: 38rem;
+    font-size: var(--font-size-lead);
+    color: var(--color-text-muted);
+  }
+
+  .home-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-s);
+    margin-top: var(--space-xs);
+  }
+
+  .home-hero__shore {
+    position: absolute;
+    inset: auto 0 -1px;
+    width: 100%;
+    height: 3rem;
+    fill: var(--color-page);
+  }
+
+  @media (min-width: 56rem) {
+    .home-hero {
+      padding-block: var(--space-2xl) calc(var(--space-2xl) + 2.5rem);
+    }
+
+    .home-hero__inner {
+      grid-template-columns: minmax(16rem, 26rem) 1fr;
+      gap: var(--space-2xl);
+      justify-items: start;
+      text-align: left;
+    }
+
+    .home-hero__logo {
+      width: 100%;
+    }
+
+    .home-hero__text {
+      align-items: flex-start;
+    }
+
+    .home-hero__actions {
+      justify-content: flex-start;
+    }
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+// Two clusters of palm trees swaying in a light breeze, at both ends of the footer top edge. Decorative.
+import palmSvg from '../../assets/brand/ziggles-palm-tree.svg?raw';
+
+// Path data of the palm artwork; its own coordinate box is 649 678 123 154.
+const palmPath = palmSvg.match(/\sd="([^"]+)"/)![1];
+
+// Each cluster is a 300×160 scene. x: left edge of the tree, scale: size, strength: how much it moves.
+const CLUSTERS = {
+  left: [
+    { x: 20, scale: 0.62, strength: 0.8, flip: false },
+    { x: 100, scale: 0.9, strength: 1, flip: true },
+  ],
+  right: [
+    { x: 40, scale: 0.75, strength: 0.9, flip: false },
+    { x: 150, scale: 1, strength: 1.1, flip: false },
+  ],
+};
+const SCENE = { width: 300, height: 160 };
+
+const transformFor = ({ x, scale, flip }: { x: number; scale: number; flip: boolean }) =>
+  `translate(${x + (flip ? 123 * scale : 0)} ${SCENE.height - 154 * scale}) scale(${flip ? -scale : scale} ${scale}) translate(-649 -678)`;
+---
+
+<div class="palm-grove" data-palm-grove aria-hidden="true">
+  {
+    Object.entries(CLUSTERS).map(([side, palms]) => (
+      <svg class:list={['palm-grove__cluster', `palm-grove__cluster--${side}`]} viewBox={`0 0 ${SCENE.width} ${SCENE.height}`} focusable="false">
+        {palms.map((palm) => (
+          // A mirrored tree must bend the other way in its own coordinates to follow the same wind.
+          <path class="palm-grove__palm" data-palm data-palm-strength={palm.strength} data-palm-wind={palm.flip ? -1 : 1} d={palmPath} transform={transformFor(palm)} />
+        ))}
+      </svg>
+    ))
+  }
+</div>
+
+<script>
+  import { animatePalms } from '../../scripts/palm-wind';
+  document.querySelectorAll('[data-palm-grove]').forEach(animatePalms);
+</script>
+
+<style>
+  .palm-grove {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .palm-grove__cluster {
+    height: clamp(5.5rem, 4rem + 6vw, 10rem);
+    width: auto;
+    aspect-ratio: 300 / 160;
+    margin-bottom: -1px;
+  }
+
+  /* Same navy as the footer: the trees rise out of it as silhouettes. */
+  .palm-grove__palm {
+    fill: var(--ziggles-navy);
+  }
+</style>

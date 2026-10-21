@@ -1,0 +1,141 @@
+---
+// Weekly sessions of one discipline, from src/content/data/training-sessions.yaml.
+import { getCollection, getEntry } from 'astro:content';
+import Icon from '../ui/Icon.astro';
+import { resolveLocale } from '../../i18n/locales';
+import { useTranslations } from '../../i18n/ui';
+import { capitalize, formatDate, formatTime, weekdayName } from '../../lib/format';
+
+interface Props {
+  discipline: 'ultimate' | 'disc-golf';
+  /** Show only indoor or outdoor sessions. */
+  setting?: 'indoor' | 'outdoor';
+}
+
+const { discipline, setting } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+
+const sessions = (await getCollection('sessions'))
+  .filter(({ data }) => data.discipline === discipline && (!setting || data.setting === setting))
+  .sort((a, b) => a.data.weekday - b.data.weekday || a.data.start.localeCompare(b.data.start));
+
+const cards = await Promise.all(
+  sessions.map(async ({ id, data }) => ({ id, ...data, venue: (await getEntry(data.venue))!.data })),
+);
+const timeRange = (start: string, end?: string) =>
+  end ? `${formatTime(start, locale)} – ${formatTime(end, locale)}` : t('schedule.from').replace('{time}', formatTime(start, locale));
+---
+
+<ul class="training-schedule" role="list">
+  {
+    cards.map((session) => (
+      <li class="training-session">
+        <p class="training-session__day">{capitalize(weekdayName(session.weekday, locale))}</p>
+        <h3 class="training-session__title">{session.title[locale]}</h3>
+        <dl class="training-session__facts">
+          <div>
+            <dt>
+              <Icon name="clock" size={18} />
+              <span class="visually-hidden">{t('schedule.when')}</span>
+            </dt>
+            <dd>{timeRange(session.start, session.end)}</dd>
+          </div>
+          <div>
+            <dt>
+              <Icon name="users" size={18} />
+              <span class="visually-hidden">{t('schedule.audience')}</span>
+            </dt>
+            <dd>{session.audience[locale]}</dd>
+          </div>
+          <div>
+            <dt>
+              <Icon name="map-pin" size={18} />
+              <span class="visually-hidden">{t('schedule.where')}</span>
+            </dt>
+            <dd>
+              {session.venue.mapUrl ? (
+                <a href={session.venue.mapUrl} rel="noopener">
+                  {session.venue.name}, {session.venue.city}
+                </a>
+              ) : (
+                `${session.venue.name}, ${session.venue.city}`
+              )}
+            </dd>
+          </div>
+          {session.resumesOn && (
+            <div>
+              <dt>
+                <Icon name="calendar" size={18} />
+                <span class="visually-hidden">{t('schedule.resume')}</span>
+              </dt>
+              <dd>
+                {t('schedule.resume')} {formatDate(session.resumesOn, locale)}
+              </dd>
+            </div>
+          )}
+        </dl>
+        {session.note && <p class="training-session__note">{session.note[locale]}</p>}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .training-schedule {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(17rem, 100%), 1fr));
+    gap: var(--space-m);
+    margin-block: var(--space-l);
+    padding: 0;
+    list-style: none;
+  }
+
+  .training-session {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-l);
+    border-top: 4px solid var(--ziggles-red);
+    border-radius: var(--radius-m);
+    background: var(--ziggles-white);
+    box-shadow: var(--shadow-card);
+  }
+
+  .training-session__day {
+    font-family: var(--font-headline);
+    font-weight: 700;
+    font-size: var(--font-size-small);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ziggles-red);
+  }
+
+  .training-session__title {
+    font-size: 1.2rem;
+  }
+
+  .training-session__facts {
+    display: grid;
+    gap: var(--space-2xs);
+    margin-top: var(--space-2xs);
+  }
+
+  .training-session__facts > div {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-xs);
+  }
+
+  .training-session__facts dt {
+    padding-top: 0.2em;
+    color: var(--ziggles-gold-on-light);
+  }
+
+  .training-session__note {
+    margin-top: auto;
+    padding-top: var(--space-xs);
+    font-size: var(--font-size-small);
+    color: var(--color-text-muted);
+  }
+</style>

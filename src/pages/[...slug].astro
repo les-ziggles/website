@@ -1,0 +1,10 @@
+---
+// French pages (default language, no URL prefix): /, /entrainements/, /inscriptions/, …
+import ContentPage from '../views/ContentPage.astro';
+import { pageStaticPaths } from '../lib/pages';
+
+export const getStaticPaths = () => pageStaticPaths('fr');
+const { page, routeKey, locale } = Astro.props;
+---
+
+<ContentPage page={page} routeKey={routeKey} locale={locale} />

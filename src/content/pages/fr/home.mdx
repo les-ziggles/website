@@ -1,0 +1,59 @@
+---
+title: Les Ziggles, l’Ultimate à Antibes
+lede: Le club d’Ultimate et de Disc Golf des Ziggles est basé à Antibes. Depuis 2003, nous pratiquons et faisons découvrir notre sport dans toutes les Alpes-Maritimes, à l’entraînement comme en tournoi.
+seo:
+  title: Les Ziggles – Club d’Ultimate & Disc Golf à Antibes (06)
+  description: "Club d’Ultimate frisbee et de Disc Golf à Antibes depuis 2003 : entraînements indoor et outdoor, section jeunes 13–17 ans et compétitions nationales."
+---
+
+import { SITE } from '../../../site.config';
+import teamPhoto from '../../../assets/images/club/club-team-photo.jpg';
+
+<Band>
+## Venez jouer avec nous
+
+Débutant ou joueur confirmé, vous êtes le bienvenu sur tous nos créneaux, toute l’année.
+
+<FeatureGrid>
+  <FeatureCard title="Ultimate en extérieur" icon="disc" to="trainings" eyebrow="Dimanche et lundi soir">
+    À Biot le dimanche, à Antibes le lundi : deux soirées ouvertes à tous, des bases au jeu en équipe.
+  </FeatureCard>
+  <FeatureCard title="Indoor le midi" icon="clock" to="trainings" eyebrow="Mardi et vendredi">
+    Une pause déjeuner sportive au gymnase Saint-Claude, de 12 h 15 à 13 h 30.
+  </FeatureCard>
+  <FeatureCard title="Section jeunes" icon="users" to="trainings" eyebrow="Jeudi soir · 13–17 ans">
+    Un entraînement dédié aux ados au stade Paul Charpin, encadré par nos coachs.
+  </FeatureCard>
+  <FeatureCard title="Disc Golf" icon="map-pin" to="disc-golf" eyebrow="Valmasque et Vaugrenier">
+    Corbeille, disques et sorties sur les parcours de la région pour viser juste.
+  </FeatureCard>
+</FeatureGrid>
+</Band>
+
+<Band tone="navy">
+## Sur les terrains de France
+
+Les Ziggles sont engagés dans les compétitions nationales et vous pourrez nous retrouver dans de nombreux tournois tout au long de l’année. Ces championnats sont ouverts à tous les licenciés, filles et garçons, sous réserve de sélection par les coachs du club.
+
+- **Indoor N3** – équipe 1
+- **Indoor DR2** – équipe 2
+- **Outdoor Open N3**
+</Band>
+
+<Band tone="white">
+## L’Ultimate en une minute
+
+L’Ultimate se joue avec un frisbee, à sept contre sept en extérieur et à cinq en salle : on marque en attrapant le disque dans la zone d’en-but adverse. Mixte et sans contact, il se joue sans arbitre, grâce à l’esprit du jeu.
+
+Les anciens du club vous expliquent les bases dans cette vidéo « collector », diffusée en {SITE.introVideo.year} sur M6.
+
+<VideoFacade youtubeId={SITE.introVideo.youtubeId} title="Les Ziggles présentent l’Ultimate sur M6 (2004)" poster={teamPhoto} />
+</Band>
+
+<Band>
+## Rejoindre les Ziggles
+
+L’inscription comprend la licence de la fédération et son assurance, avec 50 € de réduction pour les bénéficiaires du Pass’Sport. Des questions sur la section jeunes ? Écrivez à <a href={`mailto:${SITE.emails.youthCoaches}`}>{SITE.emails.youthCoaches}</a>.
+
+<ButtonLink to="membership">Tarifs et inscriptions</ButtonLink> <ButtonLink to="contact" variant="secondary">Nous écrire</ButtonLink>
+</Band>

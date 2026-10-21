@@ -1,0 +1,118 @@
+// Interface strings (navigation, buttons, labels). Page text lives in src/content/.
+
+import type { Locale } from './locales';
+import type { RouteKey } from './routes';
+
+const fr = {
+  'site.tagline': 'Club d’Ultimate & Disc Golf à Antibes',
+  'site.socialCardAlt': 'L’écusson des Ziggles devant l’équipe en maillots rouges, frisbee en main',
+  'a11y.skipToContent': 'Aller au contenu',
+  'a11y.mainNav': 'Navigation principale',
+  'a11y.footerNav': 'Liens du pied de page',
+  'a11y.breadcrumb': 'Fil d’Ariane',
+  'a11y.openMenu': 'Menu',
+  'a11y.closeMenu': 'Fermer le menu',
+  'a11y.languageSwitcher': 'Choisir la langue',
+  'a11y.homeLink': 'Les Ziggles – accueil',
+  'a11y.newTab': '(nouvel onglet)',
+  'a11y.logoAnimated': 'Écusson des Ziggles : un aigle rouge lance un frisbee au-dessus des vagues, sous les montagnes',
+  'nav.home': 'Accueil',
+  'nav.trainings': 'Entraînements',
+  'nav.membership': 'Inscriptions',
+  'nav.registration-guide': 'Inscription en ligne',
+  'nav.disc-golf': 'Disc Golf',
+  'nav.contact': 'Contact',
+  'nav.legal-notice': 'Mentions légales',
+  'home.kicker': 'Ultimate · Disc Golf · Antibes · depuis {year}',
+  'cta.join': 'Rejoindre le club',
+  'cta.trainings': 'Voir les entraînements',
+  'cta.registrationGuide': 'Suivre le guide d’inscription',
+  'cta.contact': 'Nous écrire',
+  'schedule.when': 'Quand',
+  'schedule.where': 'Où',
+  'schedule.resume': 'Reprise le',
+  'schedule.map': 'Voir le plan',
+  'schedule.audience': 'Pour qui',
+  'schedule.from': 'à partir de {time}',
+  'pricing.season': 'Saison {season}',
+  'pricing.licence': 'Licence',
+  'pricing.price': 'Tarif',
+  'pricing.free': 'gratuit avec le Pass’Sport',
+  'motion.pause': 'Mettre en pause les animations',
+  'motion.play': 'Relancer les animations',
+  'video.play': 'Lancer la vidéo',
+  'video.privacy': 'La vidéo est hébergée par YouTube : elle ne se charge que si vous cliquez.',
+  'footer.about': 'Depuis {year}, les Ziggles jouent et font découvrir l’Ultimate et le Disc Golf à Antibes et dans les Alpes-Maritimes.',
+  'footer.explore': 'Le club',
+  'footer.followUs': 'Suivez-nous',
+  'footer.contact': 'Contact',
+  'footer.affiliation': 'Club affilié à la Fédération Française de Flying Disc',
+  'footer.madeIn': 'Fait avec le soleil de la Côte d’Azur',
+  'notFound.title': 'Page introuvable',
+  'notFound.text': 'Ce frisbee est sorti du terrain. La page que vous cherchez n’existe pas ou a été déplacée.',
+  'notFound.back': 'Retour à l’accueil',
+} as const;
+
+export type UiKey = keyof typeof fr;
+
+const en: Record<UiKey, string> = {
+  'site.tagline': 'Ultimate & Disc Golf club in Antibes',
+  'site.socialCardAlt': 'The Ziggles crest in front of the team in red jerseys, holding a frisbee',
+  'a11y.skipToContent': 'Skip to content',
+  'a11y.mainNav': 'Main navigation',
+  'a11y.footerNav': 'Footer links',
+  'a11y.breadcrumb': 'Breadcrumb',
+  'a11y.openMenu': 'Menu',
+  'a11y.closeMenu': 'Close menu',
+  'a11y.languageSwitcher': 'Choose language',
+  'a11y.homeLink': 'Les Ziggles – home',
+  'a11y.newTab': '(new tab)',
+  'a11y.logoAnimated': 'Les Ziggles crest: a red eagle throws a frisbee above the waves, below the mountains',
+  'nav.home': 'Home',
+  'nav.trainings': 'Trainings',
+  'nav.membership': 'Membership',
+  'nav.registration-guide': 'Online registration',
+  'nav.disc-golf': 'Disc Golf',
+  'nav.contact': 'Contact',
+  'nav.legal-notice': 'Legal notice',
+  'home.kicker': 'Ultimate · Disc Golf · Antibes · since {year}',
+  'cta.join': 'Join the club',
+  'cta.trainings': 'See training times',
+  'cta.registrationGuide': 'Follow the registration guide',
+  'cta.contact': 'Write to us',
+  'schedule.when': 'When',
+  'schedule.where': 'Where',
+  'schedule.resume': 'Starts again on',
+  'schedule.map': 'View map',
+  'schedule.audience': 'Who for',
+  'schedule.from': 'from {time}',
+  'pricing.season': '{season} season',
+  'pricing.licence': 'Licence',
+  'pricing.price': 'Price',
+  'pricing.free': 'free with the Pass’Sport',
+  'motion.pause': 'Pause animations',
+  'motion.play': 'Play animations',
+  'video.play': 'Play the video',
+  'video.privacy': 'The video is hosted by YouTube and only loads when you click.',
+  'footer.about': 'Since {year}, the Ziggles have been playing and sharing Ultimate and Disc Golf in Antibes and across the Alpes-Maritimes.',
+  'footer.explore': 'The club',
+  'footer.followUs': 'Follow us',
+  'footer.contact': 'Contact',
+  'footer.affiliation': 'Club affiliated with the French Flying Disc Federation (FFFD)',
+  'footer.madeIn': 'Made under the French Riviera sun',
+  'notFound.title': 'Page not found',
+  'notFound.text': 'This frisbee flew out of bounds. The page you are looking for does not exist or has moved.',
+  'notFound.back': 'Back to the home page',
+};
+
+const strings: Record<Locale, Record<UiKey, string>> = { fr, en };
+
+/** Returns a translator bound to a locale: `const t = useTranslations(locale); t('nav.home')`. */
+export const useTranslations = (locale: Locale) => (key: UiKey) => strings[locale][key];
+
+export const navLabel = (key: RouteKey): UiKey => `nav.${key}` as UiKey;
+
+/** Pages listed in the header, in order. */
+export const MAIN_NAV: RouteKey[] = ['trainings', 'membership', 'disc-golf', 'contact'];
+/** Pages listed in the footer, in order. */
+export const FOOTER_NAV: RouteKey[] = ['trainings', 'membership', 'registration-guide', 'disc-golf', 'contact', 'legal-notice'];
