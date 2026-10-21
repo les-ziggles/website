@@ -1,9 +1,7 @@
 ---
 // Landing hero: the animated badge next to the club name, introduction and calls to action.
 import AnimatedLogo from '../brand/AnimatedLogo.astro';
-import AnimationToggle from '../brand/AnimationToggle.astro';
 import ButtonLink from '../content/ButtonLink.astro';
-import { SITE } from '../../site.config';
 import type { Locale } from '../../i18n/locales';
 import { useTranslations } from '../../i18n/ui';
 
@@ -21,14 +19,12 @@ const t = useTranslations(locale);
   <div class="home-hero__inner page-width">
     <AnimatedLogo locale={locale} class="home-hero__logo" />
     <div class="home-hero__text">
-      <p class="home-hero__kicker">{t('home.kicker').replace('{year}', String(SITE.foundingYear))}</p>
       <h1 class="home-hero__title" id="home-hero-title">{title}</h1>
       {lede && <p class="home-hero__lede">{lede}</p>}
       <div class="home-hero__actions">
         <ButtonLink to="membership">{t('cta.join')}</ButtonLink>
         <ButtonLink to="trainings" variant="light">{t('cta.trainings')}</ButtonLink>
       </div>
-      <AnimationToggle locale={locale} class="home-hero__motion" />
     </div>
   </div>
   <svg class="home-hero__shore" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true" focusable="false">
@@ -66,14 +62,6 @@ const t = useTranslations(locale);
     gap: var(--space-m);
   }
 
-  .home-hero__kicker {
-    font-family: var(--font-headline);
-    font-weight: 700;
-    font-size: var(--font-size-small);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--ziggles-gold);
-  }
 
   .home-hero__title {
     font-size: clamp(2.4rem, 1.6rem + 3.6vw, 4.5rem);

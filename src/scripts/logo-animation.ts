@@ -5,7 +5,7 @@
 // Frisbee: flies along #logo-flight from the trail's tip to its place, growing as it comes closer,
 // while the comic motion trail is revealed behind it through #logo-trail-mask.
 
-import { animationsEnabled, onAnimationsChange, watchVisibility } from './motion';
+import { animationsEnabled, watchVisibility } from './motion';
 import { animationLoop, bounds, buildPath, parsePath, type Segment } from './svg-path';
 
 const TAU = Math.PI * 2;
@@ -13,6 +13,7 @@ const TAU = Math.PI * 2;
 // ---------- waves ----------
 
 const BASE_PERIOD = 4.2; // seconds, main swell
+const WAVE_SPEED = 1.25; // overall tempo of the sea (1 = calm swell)
 const BASE_LENGTH = 300; // viewBox units, main swell
 const SWELLS = [
   // length, amplitude, steepness (horizontal orbit), direction, phase
@@ -167,31 +168,24 @@ function createThrow(svg: SVGSVGElement) {
 // ---------- wiring ----------
 
 export function animateLogo(svg: SVGSVGElement) {
+  if (!animationsEnabled()) return; // reduced motion: keep the badge still
+
   const waves = [...svg.querySelectorAll<SVGPathElement>('#logo-waves path')].map(prepareWave);
   const frisbeeThrow = createThrow(svg);
-  let enabled = animationsEnabled();
   let visible = true;
   // The throw plays once on arrival; the waves keep moving.
-  let throwStartedAt: number | null = enabled ? 0 : null;
+  let throwStartedAt: number | null = 0;
 
   const loop = animationLoop(
     (time) => {
-      waves.forEach((wave) => drawWave(wave, time));
+      waves.forEach((wave) => drawWave(wave, time * WAVE_SPEED));
       if (throwStartedAt !== null && !frisbeeThrow.draw(time - throwStartedAt)) throwStartedAt = null;
     },
-    () => enabled && visible,
+    () => visible,
   );
 
   watchVisibility(svg, (isVisible) => {
     visible = isVisible;
-    loop.start();
-  });
-  onAnimationsChange((isEnabled) => {
-    enabled = isEnabled;
-    if (!isEnabled && throwStartedAt !== null) {
-      frisbeeThrow.finish();
-      throwStartedAt = null;
-    }
     loop.start();
   });
   loop.start();

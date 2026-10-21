@@ -8,16 +8,19 @@ seo:
 
 import { SITE } from '../../../site.config';
 
-{/* TODO(board): fill in the registered office, RNA number and publication director before going live. */}
-
 ## Publisher
 
-Les Ziggles association, an Ultimate and Disc Golf club affiliated with the French Flying Disc Federation under number {SITE.federation.clubCode}.
+<a href="/en/">ziggles.fr</a> is the website of the “{SITE.association.name}” association, a French non-profit association (loi 1901) registered at the following address:
 
-- Registered office: to be completed, Antibes (06), France
-- RNA number: to be completed
-- Publication director: to be completed (president of the association)
-- Contact: <a href={`mailto:${SITE.emails.board}`}>{SITE.emails.board}</a>
+<p>
+  {SITE.address.street}<br />
+  {SITE.address.extended}<br />
+  {`${SITE.address.postalCode} ${SITE.address.locality}, France`}
+</p>
+
+- RNA number: {SITE.association.rna}
+- Club affiliated with the French Flying Disc Federation under number {SITE.federation.clubCode}
+- Contact: <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
 
 ## Hosting
 
@@ -29,10 +32,9 @@ The logo, photos and texts of this site belong to the Les Ziggles association. S
 
 ## Personal data
 
-This site sets no cookies, uses no analytics and contains no forms. Fonts are served from the site itself.
+This site sets no cookies, uses no analytics and contains no forms. All of its resources (fonts, images, icons, stylesheets and scripts) are served from the site itself: browsing it makes your browser contact no third-party service, unless you play the video on the home page.
 
-- Your choice to turn animations on or off is stored in your browser only.
 - The video on the home page is only loaded from YouTube (youtube-nocookie.com) if you click it; YouTube’s privacy policy then applies.
 - Registrations take place in the federation’s member space, which is the data controller for licence data.
 
-For any question about your data, write to <a href={`mailto:${SITE.emails.board}`}>{SITE.emails.board}</a>.
+For any question about your data, write to <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.

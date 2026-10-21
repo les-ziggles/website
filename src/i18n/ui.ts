@@ -4,7 +4,7 @@ import type { Locale } from './locales';
 import type { RouteKey } from './routes';
 
 const fr = {
-  'site.tagline': 'Club d’Ultimate & Disc Golf à Antibes',
+  'site.tagline': 'Club d’Ultimate & Disc Golf Antibes',
   'site.socialCardAlt': 'L’écusson des Ziggles devant l’équipe en maillots rouges, frisbee en main',
   'a11y.skipToContent': 'Aller au contenu',
   'a11y.mainNav': 'Navigation principale',
@@ -17,13 +17,13 @@ const fr = {
   'a11y.newTab': '(nouvel onglet)',
   'a11y.logoAnimated': 'Écusson des Ziggles : un aigle rouge lance un frisbee au-dessus des vagues, sous les montagnes',
   'nav.home': 'Accueil',
+  'nav.association': 'L’association',
   'nav.trainings': 'Entraînements',
   'nav.membership': 'Inscriptions',
   'nav.registration-guide': 'Inscription en ligne',
   'nav.disc-golf': 'Disc Golf',
   'nav.contact': 'Contact',
   'nav.legal-notice': 'Mentions légales',
-  'home.kicker': 'Ultimate · Disc Golf · Antibes · depuis {year}',
   'cta.join': 'Rejoindre le club',
   'cta.trainings': 'Voir les entraînements',
   'cta.registrationGuide': 'Suivre le guide d’inscription',
@@ -38,8 +38,6 @@ const fr = {
   'pricing.licence': 'Licence',
   'pricing.price': 'Tarif',
   'pricing.free': 'gratuit avec le Pass’Sport',
-  'motion.pause': 'Mettre en pause les animations',
-  'motion.play': 'Relancer les animations',
   'video.play': 'Lancer la vidéo',
   'video.privacy': 'La vidéo est hébergée par YouTube : elle ne se charge que si vous cliquez.',
   'footer.about': 'Depuis {year}, les Ziggles jouent et font découvrir l’Ultimate et le Disc Golf à Antibes et dans les Alpes-Maritimes.',
@@ -56,7 +54,7 @@ const fr = {
 export type UiKey = keyof typeof fr;
 
 const en: Record<UiKey, string> = {
-  'site.tagline': 'Ultimate & Disc Golf club in Antibes',
+  'site.tagline': 'Ultimate & Disc Golf Club Antibes',
   'site.socialCardAlt': 'The Ziggles crest in front of the team in red jerseys, holding a frisbee',
   'a11y.skipToContent': 'Skip to content',
   'a11y.mainNav': 'Main navigation',
@@ -69,13 +67,13 @@ const en: Record<UiKey, string> = {
   'a11y.newTab': '(new tab)',
   'a11y.logoAnimated': 'Les Ziggles crest: a red eagle throws a frisbee above the waves, below the mountains',
   'nav.home': 'Home',
+  'nav.association': 'The association',
   'nav.trainings': 'Trainings',
   'nav.membership': 'Membership',
   'nav.registration-guide': 'Online registration',
   'nav.disc-golf': 'Disc Golf',
   'nav.contact': 'Contact',
   'nav.legal-notice': 'Legal notice',
-  'home.kicker': 'Ultimate · Disc Golf · Antibes · since {year}',
   'cta.join': 'Join the club',
   'cta.trainings': 'See training times',
   'cta.registrationGuide': 'Follow the registration guide',
@@ -90,8 +88,6 @@ const en: Record<UiKey, string> = {
   'pricing.licence': 'Licence',
   'pricing.price': 'Price',
   'pricing.free': 'free with the Pass’Sport',
-  'motion.pause': 'Pause animations',
-  'motion.play': 'Play animations',
   'video.play': 'Play the video',
   'video.privacy': 'The video is hosted by YouTube and only loads when you click.',
   'footer.about': 'Since {year}, the Ziggles have been playing and sharing Ultimate and Disc Golf in Antibes and across the Alpes-Maritimes.',
@@ -115,4 +111,4 @@ export const navLabel = (key: RouteKey): UiKey => `nav.${key}` as UiKey;
 /** Pages listed in the header, in order. */
 export const MAIN_NAV: RouteKey[] = ['trainings', 'membership', 'disc-golf', 'contact'];
 /** Pages listed in the footer, in order. */
-export const FOOTER_NAV: RouteKey[] = ['trainings', 'membership', 'registration-guide', 'disc-golf', 'contact', 'legal-notice'];
+export const FOOTER_NAV: RouteKey[] = ['association', 'trainings', 'membership', 'registration-guide', 'disc-golf', 'contact', 'legal-notice'];

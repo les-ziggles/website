@@ -14,6 +14,7 @@ const WEBSITE_ID = `${SITE.url}/#website`;
 
 const postalAddress = {
   '@type': 'PostalAddress',
+  streetAddress: `${SITE.address.street}, ${SITE.address.extended}`,
   addressLocality: SITE.address.locality,
   postalCode: SITE.address.postalCode,
   addressRegion: SITE.address.region,
@@ -32,13 +33,13 @@ export function organization(locale: Locale): JsonLd {
     url: absoluteUrl('/'),
     logo: { '@type': 'ImageObject', url: absoluteUrl('/icons/icon-512.png'), width: 512, height: 512 },
     image: absoluteUrl('/social-card.jpg'),
-    email: SITE.emails.board,
+    email: SITE.email,
     foundingDate: String(SITE.foundingYear),
     sport: ['Ultimate', 'Disc golf'],
     address: postalAddress,
     areaServed: { '@type': 'AdministrativeArea', name: SITE.address.region },
     memberOf: { '@type': 'SportsOrganization', name: SITE.federation.name, alternateName: SITE.federation.shortName, url: SITE.federation.url },
-    sameAs: [SITE.social.facebook, SITE.social.x],
+    sameAs: [SITE.social.facebook, SITE.social.instagram],
   };
 }
 

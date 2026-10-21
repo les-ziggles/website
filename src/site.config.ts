@@ -15,20 +15,26 @@ export const SITE = {
     memberSpaceUrl: 'https://monespace.ff-flyingdisc.fr/',
     clubCode: '006001',
   },
+  /** The association behind the club (legal notice). */
+  association: {
+    name: 'LES ZIGGLES',
+    rna: 'W061003545',
+  },
+  /** Registered office of the association. */
   address: {
+    street: '165 Rue des Cistes',
+    extended: 'chez Craftazur, Bât B, Pôle Entreprise Euro 95',
     locality: 'Antibes',
     postalCode: '06600',
     region: 'Alpes-Maritimes',
     country: 'FR',
   },
-  emails: {
-    board: 'ziggles06@gmail.com',
-    youthCoaches: 'coachs.jeunes@ziggles.fr',
-  },
+  /** The club's contact address, used everywhere on the site. */
+  email: 'contact@ziggles.fr',
   social: {
     facebook: 'https://www.facebook.com/ziggles06/',
-    x: 'https://twitter.com/ziggles06',
-    xHandle: '@ziggles06',
+    instagram: 'https://www.instagram.com/ziggles06/',
+    instagramHandle: '@ziggles06',
   },
   attendanceUrl: 'https://ziggles.yaentrainement.fr/',
   medicalCertificateTemplateUrl: 'https://drive.google.com/file/d/1tmLvBe0vjNGHD9QcqwqrVqLmoJWBDOgi/view',

@@ -29,10 +29,10 @@ bun run preview
 ## What is in the site
 
 - An animated landing page: the club badge with moving sea waves and a frisbee throw drawing its comic motion trail.
-- Pages for trainings, membership and prices, the online registration guide, Disc Golf, contact and the legal notice, in both languages. French URLs keep the paths of the former WordPress site (`/entrainements/`, `/inscriptions/`, …); English ones are translated (`/en/trainings/`, `/en/membership/`, …).
+- Pages for the association, trainings, membership and prices, the online registration guide, Disc Golf, contact and the legal notice, in both languages. French URLs keep the paths of the former WordPress site (`/lassociation/`, `/entrainements/`, `/inscriptions/`, …); English ones are translated (`/en/trainings/`, `/en/membership/`, …).
 - SEO: per-page titles and descriptions, canonical and hreflang links, Open Graph and Twitter cards, JSON-LD (`SportsOrganization`, `WebSite`, `WebPage`, `BreadcrumbList`, `SportsEvent` for weekly sessions, `OfferCatalog` for prices), `sitemap-index.xml`, `robots.txt` and `llms.txt`.
 - Privacy: no cookies, no analytics, fonts served from the site, YouTube loaded only on click from `youtube-nocookie.com`.
-- Footer palm trees swaying in the wind; a button pauses every animation (also off by default when the visitor's system asks for reduced motion).
+- Footer palm trees swaying in the wind. Animations stay still when the visitor's system asks for reduced motion.
 
 ## Editing content
 
@@ -43,12 +43,12 @@ bun run preview
 | Training venues and map links | `src/content/data/venues.yaml` |
 | Membership prices | `src/content/data/membership-prices.yaml` |
 | Buttons, navigation and other interface text | `src/i18n/ui.ts` |
-| Emails, social accounts, federation links | `src/site.config.ts` |
+| Emails, social accounts, association details (address, RNA), federation links | `src/site.config.ts` |
 | URLs of every page in each language | `src/i18n/routes.ts` |
 
 Each MDX page starts with its heading, introduction and SEO fields. The build fails with a clear message when an SEO title is longer than 65 characters, a description falls outside 70–165 characters, or a translation is missing.
 
-MDX pages can use these components without importing them: `Band`, `ButtonLink`, `Callout`, `ContentImage`, `FeatureCard`, `FeatureGrid`, `PartnerLogo`, `PriceList`, `TrainingSchedule`, `VideoFacade` (see `src/components/content/`).
+MDX pages can use these components without importing them: `Band`, `ButtonGroup` (a row of buttons), `ButtonLink`, `Callout`, `ContentImage`, `FeatureCard`, `FeatureGrid`, `PartnerLogo`, `PriceList`, `TrainingSchedule`, `VideoFacade` (see `src/components/content/`).
 
 After editing French text, run `bun run typography` to add the narrow no-break spaces French puts before `: ; ! ?` and inside `« »`.
 
@@ -99,7 +99,6 @@ Cloudflare setup:
 
 ## Before going live
 
-- Fill in the publisher details marked "à compléter" in `src/content/pages/fr/legal-notice.mdx` and `en/legal-notice.mdx`.
 - Check the licence of the Alley-Oop font (`src/assets/fonts/alley-oop-regular.woff2`) for web use: the file carries no author or licence information.
 - The federation PDF guide linked from the registration guide is still hosted on the old WordPress site (`licenceGuidePdfUrl` in `src/site.config.ts`); copy it to `public/` if that site is closed.
 - Confirm the domain in `src/site.config.ts` (`https://ziggles.fr`).

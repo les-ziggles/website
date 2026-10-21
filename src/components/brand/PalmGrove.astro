@@ -1,16 +1,13 @@
 ---
-// Two clusters of palm trees swaying in a light breeze, at both ends of the footer top edge. Decorative.
+// A cluster of palm trees swaying in a light breeze, on the right of the footer top edge. Decorative.
 import palmSvg from '../../assets/brand/ziggles-palm-tree.svg?raw';
 
 // Path data of the palm artwork; its own coordinate box is 649 678 123 154.
 const palmPath = palmSvg.match(/\sd="([^"]+)"/)![1];
 
-// Each cluster is a 300×160 scene. x: left edge of the tree, scale: size, strength: how much it moves.
+// Each cluster is a 300×160 scene, pinned to its side of the screen.
+// x: left edge of the tree, scale: size, strength: how much it moves, flip: mirrored.
 const CLUSTERS = {
-  left: [
-    { x: 20, scale: 0.62, strength: 0.8, flip: false },
-    { x: 100, scale: 0.9, strength: 1, flip: true },
-  ],
   right: [
     { x: 40, scale: 0.75, strength: 0.9, flip: false },
     { x: 150, scale: 1, strength: 1.1, flip: false },
@@ -43,7 +40,7 @@ const transformFor = ({ x, scale, flip }: { x: number; scale: number; flip: bool
 <style>
   .palm-grove {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: flex-end;
     pointer-events: none;
     overflow: hidden;

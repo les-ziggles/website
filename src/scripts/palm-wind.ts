@@ -2,7 +2,7 @@
 // The trunk bends more and more towards the top under slow gusts; fronds flutter faster.
 // Coordinates are those of src/assets/brand/ziggles-palm-tree.svg.
 
-import { animationsEnabled, onAnimationsChange, watchVisibility } from './motion';
+import { animationsEnabled, watchVisibility } from './motion';
 import { animationLoop, bounds, buildPath, parsePath } from './svg-path';
 
 // Measured on the artwork: where the fronds meet, and the foot of the trunk on the island.
@@ -12,6 +12,8 @@ const TRUNK_FOOT = { x: 697, y: 820 };
 const trunkXAt = (y: number) => TRUNK_FOOT.x + ((TRUNK_FOOT.y - y) / (TRUNK_FOOT.y - CROWN.y)) * (CROWN.x - TRUNK_FOOT.x);
 
 export function animatePalms(container: Element) {
+  if (!animationsEnabled()) return; // reduced motion: keep the trees still
+
   const palms = [...container.querySelectorAll<SVGPathElement>('[data-palm]')].map((element, index) => {
     const segments = parsePath(element.getAttribute('d') ?? '');
     const box = bounds(segments);
@@ -25,7 +27,6 @@ export function animatePalms(container: Element) {
     };
   });
 
-  let enabled = animationsEnabled();
   let visible = false;
 
   const loop = animationLoop(
@@ -50,15 +51,11 @@ export function animatePalms(container: Element) {
         );
       }
     },
-    () => enabled && visible,
+    () => visible,
   );
 
   watchVisibility(container, (isVisible) => {
     visible = isVisible;
-    loop.start();
-  });
-  onAnimationsChange((isEnabled) => {
-    enabled = isEnabled;
     loop.start();
   });
 }

@@ -8,16 +8,19 @@ seo:
 
 import { SITE } from '../../../site.config';
 
-{/* TODO(bureau): compléter le siège social, le numéro RNA et le ou la responsable de la publication avant la mise en ligne. */}
-
 ## Éditeur du site
 
-Association Les Ziggles, club d’Ultimate et de Disc Golf affilié à la Fédération Française de Flying Disc sous le numéro {SITE.federation.clubCode}.
+<a href="/">ziggles.fr</a> est le site de l’association « {SITE.association.name} », association loi 1901 domiciliée à l’adresse suivante :
 
-- Siège social : à compléter, Antibes (06)
-- Numéro RNA : à compléter
-- Responsable de la publication : à compléter (président ou présidente de l’association)
-- Contact : <a href={`mailto:${SITE.emails.board}`}>{SITE.emails.board}</a>
+<p>
+  {SITE.address.street}<br />
+  {SITE.address.extended}<br />
+  {`${SITE.address.postalCode} ${SITE.address.locality}`}
+</p>
+
+- Numéro RNA : {SITE.association.rna}
+- Club affilié à la Fédération Française de Flying Disc sous le numéro {SITE.federation.clubCode}
+- Contact : <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
 
 ## Hébergement
 
@@ -29,10 +32,9 @@ Le logo, les photos et les textes du site appartiennent à l’association Les Z
 
 ## Données personnelles
 
-Ce site ne dépose aucun cookie, n’utilise aucun outil de mesure d’audience et ne contient aucun formulaire. Les polices de caractères sont hébergées sur le site lui-même.
+Ce site ne dépose aucun cookie, n’utilise aucun outil de mesure d’audience et ne contient aucun formulaire. Toutes ses ressources (polices de caractères, images, icônes, feuilles de style et scripts) sont hébergées sur le site lui-même : en le consultant, votre navigateur ne contacte aucun service tiers, sauf si vous lancez la vidéo de la page d’accueil.
 
-- Votre choix d’activer ou non les animations est mémorisé dans votre navigateur uniquement.
 - La vidéo de la page d’accueil n’est chargée depuis YouTube (youtube-nocookie.com) que si vous cliquez dessus ; la politique de confidentialité de YouTube s’applique alors.
 - Les inscriptions se font sur l’espace licencié de la fédération, responsable du traitement des données de licence.
 
-Pour toute question sur vos données, écrivez à <a href={`mailto:${SITE.emails.board}`}>{SITE.emails.board}</a>.
+Pour toute question sur vos données, écrivez à <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.

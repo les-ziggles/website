@@ -11,6 +11,7 @@ import { DEFAULT_LOCALE, LOCALES, type Locale } from './locales';
 
 export const ROUTES = {
   home: { fr: '', en: '' },
+  association: { fr: 'lassociation', en: 'association' },
   trainings: { fr: 'entrainements', en: 'trainings' },
   membership: { fr: 'inscriptions', en: 'membership' },
   'registration-guide': { fr: 'inscription-en-ligne', en: 'online-registration' },

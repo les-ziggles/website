@@ -1,6 +1,5 @@
 ---
 // Site footer: palm trees in the breeze, club details, links, contact and social accounts.
-import AnimationToggle from '../brand/AnimationToggle.astro';
 import BrandMark from '../brand/BrandMark.astro';
 import PalmGrove from '../brand/PalmGrove.astro';
 import Icon from '../ui/Icon.astro';
@@ -50,10 +49,7 @@ const year = new Date().getFullYear();
         <h2 class="site-footer__heading">{t('footer.contact')}</h2>
         <ul class="site-footer__list">
           <li>
-            <a class="site-footer__icon-link" href={`mailto:${SITE.emails.board}`}><Icon name="mail" size={18} />{SITE.emails.board}</a>
-          </li>
-          <li>
-            <a class="site-footer__icon-link" href={`mailto:${SITE.emails.youthCoaches}`}><Icon name="users" size={18} />{SITE.emails.youthCoaches}</a>
+            <a class="site-footer__icon-link" href={`mailto:${SITE.email}`}><Icon name="mail" size={18} />{SITE.email}</a>
           </li>
         </ul>
         <h2 class="site-footer__heading">{t('footer.followUs')}</h2>
@@ -64,8 +60,8 @@ const year = new Date().getFullYear();
             </a>
           </li>
           <li>
-            <a class="site-footer__social-link" href={SITE.social.x} rel="me noopener">
-              <Icon name="x" size={20} label="X (Twitter)" />
+            <a class="site-footer__social-link" href={SITE.social.instagram} rel="me noopener">
+              <Icon name="instagram" size={22} label="Instagram" />
             </a>
           </li>
         </ul>
@@ -74,7 +70,6 @@ const year = new Date().getFullYear();
 
     <div class="site-footer__legal page-width">
       <p>© {year} {SITE.name} · {t('footer.madeIn')}</p>
-      <AnimationToggle locale={locale} />
     </div>
   </div>
 </footer>

@@ -13,8 +13,8 @@ export const GET: APIRoute = async () => {
     '',
     `> ${SITE.name} is an Ultimate (flying disc) and Disc Golf club based in ${SITE.address.locality}, on the French Riviera (${SITE.address.region}, France), founded in ${SITE.foundingYear} and affiliated with the ${SITE.federation.name} (${SITE.federation.shortName}, club code ${SITE.federation.clubCode}). The site is in French (default) and English.`,
     '',
-    `- Contact: ${SITE.emails.board} (board), ${SITE.emails.youthCoaches} (youth section)`,
-    `- Social: ${SITE.social.facebook}, ${SITE.social.x}`,
+    `- Contact: ${SITE.email}`,
+    `- Social: ${SITE.social.facebook}, ${SITE.social.instagram} (${SITE.social.instagramHandle})`,
     `- Registration happens on the federation member space: ${SITE.federation.memberSpaceUrl}`,
     '',
   ];

@@ -1,0 +1,16 @@
+---
+// Row of <ButtonLink> items with consistent spacing; wraps on narrow screens.
+---
+
+<div class="button-group">
+  <slot />
+</div>
+
+<style>
+  .button-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-s);
+  }
+</style>
