@@ -97,7 +97,7 @@ write('src/assets/brand/ziggles-logo.svg', dropEditorIds(cleanMarkup(master)).re
 // - the frisbee shapes are grouped (#logo-frisbee) so they can fly along the trail.
 // - the bird's dark-red shading (path324) is lifted above the frisbee so the disc passes behind the bird.
 // - the trail pieces get class "logo-trail"; a mask (#logo-trail-mask) reveals them along #logo-flight.
-// - the waves group becomes #logo-waves.
+// - the waves group becomes #logo-waves, without its smallest wave (path526, far right).
 
 // Centerline of the motion trail, from its thin tip (top-left) to the frisbee's resting center.
 const FLIGHT = 'M 232,508 C 180,535 135,575 132,625 C 130,670 185,705 245,722 C 300,738 360,757 440,760 C 520,762 600,700 657,606';
@@ -120,6 +120,7 @@ function buildAnimatedLogo(source) {
 
   for (const id of TRAIL_IDS) svg = svg.replace(getPath(svg, id), (el) => el.replace('<path', '<path class="logo-trail"'));
   svg = svg.replace(/<g\b([^>]*?)id="g1"/, '<g$1id="logo-waves"');
+  svg = svg.replace(getPath(svg, 'path526'), '');
 
   // Reveal mask: a wide stroke along the flight line, minus a frisbee-shaped hole that follows the disc,
   // so the trail is drawn behind the frisbee and never painted over it.
