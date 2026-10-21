@@ -64,6 +64,9 @@ const sessions = defineCollection({
     /** First session of the season. */
     resumesOn: z.coerce.date().optional(),
     note: localized.optional(),
+    /** Playing surface, and the shoes it calls for. */
+    field: localized.optional(),
+    shoes: localized.optional(),
   }),
 });
 

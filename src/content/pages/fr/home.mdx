@@ -15,8 +15,11 @@ import teamPhoto from '../../../assets/images/club/club-team-photo.jpg';
 Débutant ou joueur confirmé, vous êtes le bienvenu sur tous nos créneaux, toute l’année.
 
 <FeatureGrid>
-  <FeatureCard title="Ultimate en extérieur" icon="disc" to="trainings" eyebrow="Dimanche et lundi soir">
-    À Biot le dimanche, à Antibes le lundi : deux soirées ouvertes à tous, des bases au jeu en équipe.
+  <FeatureCard id="lundi-loisir" title="Ultimate loisir" icon="disc" to="trainings" eyebrow="Lundi soir">
+    Au stade de la Fontonne, à Antibes : un créneau ouvert à tous, idéal pour découvrir l’Ultimate et revoir les bases.
+  </FeatureCard>
+  <FeatureCard title="Ultimate sénior" icon="trophy" to="trainings" eyebrow="Dimanche soir">
+    Au complexe Pierre Operto, à Biot : le créneau des adultes, débutants comme confirmés, pour progresser vers le jeu en équipe.
   </FeatureCard>
   <FeatureCard title="Indoor le midi" icon="clock" to="trainings" eyebrow="Mardi">
     Une pause déjeuner sportive le mardi au gymnase Saint-Claude, de 12 h 15 à 13 h 30.
@@ -56,7 +59,12 @@ L’Ultimate se joue avec un frisbee, à sept contre sept en extérieur et à ci
 
 Les anciens du club vous expliquent les bases dans cette vidéo « collector », diffusée en {SITE.introVideo.year} sur M6.
 
+<MediaSplit id={SITE.introVideo.anchor}>
 <VideoFacade youtubeId={SITE.introVideo.youtubeId} title="Les Ziggles présentent l’Ultimate sur M6 (2004)" poster={teamPhoto} />
+<TrialBanner count={3} title="séances d’essai gratuites" action="Voir le créneau du lundi" href="#lundi-loisir" icon="arrow-up">
+Envie de vous lancer ? Venez essayer l’Ultimate trois fois avant de prendre votre licence, c’est offert. Le créneau loisir du lundi soir est idéal pour débuter.
+</TrialBanner>
+</MediaSplit>
 </Band>
 
 <Band>

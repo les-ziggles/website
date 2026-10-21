@@ -63,6 +63,24 @@ const timeRange = (start: string, end?: string) =>
               )}
             </dd>
           </div>
+          {session.field && (
+            <div>
+              <dt>
+                <Icon name="field" size={18} />
+                <span class="visually-hidden">{t('schedule.field')}</span>
+              </dt>
+              <dd>{session.field[locale]}</dd>
+            </div>
+          )}
+          {session.shoes && (
+            <div>
+              <dt>
+                <Icon name="shoe" size={18} />
+                <span class="visually-hidden">{t('schedule.shoes')}</span>
+              </dt>
+              <dd>{session.shoes[locale]}</dd>
+            </div>
+          )}
           {session.resumesOn && (
             <div>
               <dt>

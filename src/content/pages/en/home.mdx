@@ -15,8 +15,11 @@ import teamPhoto from '../../../assets/images/club/club-team-photo.jpg';
 Beginner or seasoned player, you are welcome at every session, all year round.
 
 <FeatureGrid>
-  <FeatureCard title="Outdoor Ultimate" icon="disc" to="trainings" eyebrow="Sunday and Monday evenings">
-    Biot on Sundays, Antibes on Mondays: two evenings open to everyone, from the basics to team play.
+  <FeatureCard id="monday-leisure" title="Leisure Ultimate" icon="disc" to="trainings" eyebrow="Monday evening">
+    At the Fontonne stadium in Antibes: a session open to everyone, ideal to discover Ultimate and work on the basics.
+  </FeatureCard>
+  <FeatureCard title="Senior Ultimate" icon="trophy" to="trainings" eyebrow="Sunday evening">
+    At the Pierre Operto complex in Biot: the adults’ session, beginners and experienced players alike, to grow into team play.
   </FeatureCard>
   <FeatureCard title="Lunchtime indoor" icon="clock" to="trainings" eyebrow="Tuesday">
     A sporty Tuesday lunch break at the Saint-Claude gym, from 12:15 to 1:30 pm.
@@ -56,7 +59,12 @@ Ultimate is played with a flying disc, seven against seven outdoors and five a s
 
 Our veterans explain the basics in this “collector” clip, broadcast in {SITE.introVideo.year} on the French TV channel M6 (in French).
 
+<MediaSplit id={SITE.introVideo.anchor}>
 <VideoFacade youtubeId={SITE.introVideo.youtubeId} title="The Ziggles introduce Ultimate on M6 (2004, in French)" poster={teamPhoto} />
+<TrialBanner count={3} title="free trial sessions" action="See the Monday session" href="#monday-leisure" icon="arrow-up">
+Fancy giving it a go? Try Ultimate three times before taking out a licence, free of charge. The Monday evening leisure session is ideal for beginners.
+</TrialBanner>
+</MediaSplit>
 </Band>
 
 <Band>

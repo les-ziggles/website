@@ -1,6 +1,7 @@
 ---
-// A link styled as a button. Internal links take a route key, external ones an href.
-import Icon from '../ui/Icon.astro';
+// A link styled as a button. Internal links take a route key, external ones an href, and links to a
+// section of the same page an href starting with "#".
+import Icon, { type IconName } from '../ui/Icon.astro';
 import { resolveLocale } from '../../i18n/locales';
 import { pathFor, type RouteKey } from '../../i18n/routes';
 import { isExternal } from '../../lib/urls';
@@ -11,18 +12,21 @@ interface Props {
   /** …or any URL. */
   href?: string;
   variant?: 'primary' | 'secondary' | 'light';
+  /** Overrides the arrow, e.g. "arrow-up" for an anchor higher up the page (anchors point down by default). */
+  icon?: IconName;
 }
 
-const { to, href, variant = 'primary' } = Astro.props;
+const { to, href, variant = 'primary', icon: iconOverride } = Astro.props;
 const locale = resolveLocale(Astro.currentLocale);
 const target = to ? pathFor(to, locale) : href;
 if (!target) throw new Error('<ButtonLink> needs a `to` route key or an `href`');
 const external = isExternal(target);
+const icon = iconOverride ?? (external ? 'external' : target.startsWith('#') ? 'arrow-down' : 'arrow-right');
 ---
 
 <a class:list={['button-link', `button-link--${variant}`]} href={target} rel={external ? 'noopener' : undefined}>
   <slot />
-  <Icon name={external ? 'external' : 'arrow-right'} size={18} />
+  <Icon name={icon} size={18} />
 </a>
 
 <style>
@@ -66,6 +70,10 @@ const external = isExternal(target);
 
   .button-link--secondary:hover {
     color: var(--color-link);
+  }
+
+  :global(.on-dark) .button-link--secondary:hover {
+    color: var(--color-highlight-on-dark);
   }
 
   .button-link--light {

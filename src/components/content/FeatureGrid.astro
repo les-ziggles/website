@@ -15,4 +15,11 @@
     padding: 0;
     list-style: none;
   }
+
+  /* Exactly five cards: one row on wide screens rather than four and a lonely fifth. */
+  @media (min-width: 64rem) {
+    .feature-grid:has(> :nth-child(5):last-child) {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+  }
 </style>

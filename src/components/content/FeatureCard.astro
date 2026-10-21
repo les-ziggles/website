@@ -10,13 +10,15 @@ interface Props {
   to: RouteKey;
   /** Short line above the title (e.g. a weekday). */
   eyebrow?: string;
+  /** Anchor, so another part of the page can link to this card. */
+  id?: string;
 }
 
-const { title, icon, to, eyebrow } = Astro.props;
+const { title, icon, to, eyebrow, id } = Astro.props;
 const locale = resolveLocale(Astro.currentLocale);
 ---
 
-<li class="feature-card">
+<li class="feature-card" id={id}>
   <span class="feature-card__icon"><Icon name={icon} size={26} /></span>
   {eyebrow && <p class="feature-card__eyebrow">{eyebrow}</p>}
   <h3 class="feature-card__title">
@@ -36,6 +38,12 @@ const locale = resolveLocale(Astro.currentLocale);
     background: var(--ziggles-white);
     box-shadow: var(--shadow-card);
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  }
+
+  /* Reached through an anchor link: highlighted. */
+  .feature-card:target {
+    outline: 3px solid var(--ziggles-gold);
+    outline-offset: 3px;
   }
 
   .feature-card:hover {

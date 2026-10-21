@@ -1,0 +1,33 @@
+---
+// Two blocks side by side on wide screens (e.g. a video and a banner), stacked on small ones.
+interface Props {
+  /** Anchor, so a link elsewhere on the page can scroll to it. */
+  id?: string;
+}
+
+const { id } = Astro.props;
+---
+
+<div class="media-split" id={id}>
+  <slot />
+</div>
+
+<style>
+  .media-split {
+    display: grid;
+    gap: var(--space-l);
+    align-items: center;
+  }
+
+  .media-split.media-split > :global(*) {
+    max-width: none;
+    margin-block: 0;
+  }
+
+  @media (min-width: 56rem) {
+    .media-split {
+      grid-template-columns: 3fr 2fr;
+      gap: var(--space-xl);
+    }
+  }
+</style>

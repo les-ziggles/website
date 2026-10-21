@@ -1,0 +1,76 @@
+---
+// Eye-catching offer banner (the free trial sessions): a heading starting with a big number, a short
+// text and one call to action.
+import ButtonLink from './ButtonLink.astro';
+import type { IconName } from '../ui/Icon.astro';
+
+interface Props {
+  /** The number that starts the heading, shown large: 3 for "3 free trial sessions"… */
+  count: number;
+  /** …and the rest of the heading: "free trial sessions". */
+  title: string;
+  /** Label and target of the button: a page path, a URL or an anchor ("#monday-leisure"). */
+  action: string;
+  href: string;
+  /** Arrow of the button, e.g. "arrow-up" when the anchor is higher up the page. */
+  icon?: IconName;
+}
+
+const { count, title, action, href, icon } = Astro.props;
+---
+
+<aside class="trial-banner on-dark" aria-labelledby="trial-banner-title">
+  <h3 class="trial-banner__title" id="trial-banner-title">
+    <span class="trial-banner__count">{count}</span>{' '}
+    <span class="trial-banner__label">{title}</span>
+  </h3>
+  <div class="trial-banner__text"><slot /></div>
+  <ButtonLink href={href} variant="light" icon={icon}>{action}</ButtonLink>
+</aside>
+
+<style>
+  .trial-banner {
+    position: relative;
+    display: grid;
+    justify-items: start;
+    gap: var(--space-s);
+    overflow: hidden;
+    padding: var(--space-xl) var(--space-l) var(--space-l);
+    border-radius: var(--radius-l);
+    background:
+      /* Frisbee rings coming in from the top right corner. */
+      repeating-radial-gradient(circle at 105% -5%, transparent 0 2.2rem, rgb(255 255 255 / 0.08) 2.2rem 2.6rem) no-repeat,
+      linear-gradient(145deg, var(--ziggles-red) 0%, var(--ziggles-red-dark) 100%);
+    box-shadow: var(--shadow-card);
+  }
+
+  .trial-banner__title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    font-size: var(--font-size-h3);
+    color: var(--ziggles-white);
+  }
+
+  .trial-banner__count {
+    flex: none;
+    font-family: var(--font-display);
+    font-size: clamp(4.5rem, 3.5rem + 4vw, 6.5rem);
+    font-weight: 400;
+    line-height: 0.8;
+    color: var(--ziggles-gold);
+  }
+
+  .trial-banner__label {
+    max-width: 12ch;
+    line-height: 1.15;
+  }
+
+  .trial-banner__text {
+    color: color-mix(in oklab, var(--ziggles-white), var(--ziggles-red) 12%);
+  }
+
+  .trial-banner :global(.button-link) {
+    margin-top: var(--space-xs);
+  }
+</style>

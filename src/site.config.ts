@@ -59,6 +59,8 @@ export const SITE = {
   licenceGuidePdfUrl: 'https://zigglessite.wordpress.com/wp-content/uploads/2024/08/demande-de-licence-mon-espace-licencie.pdf',
   introVideo: {
     youtubeId: '6MKa0auCino',
+    /** Anchor of the video on the home page ("Découvrir l’Ultimate" button of the hero). */
+    anchor: 'video-ultimate',
     year: 2004,
   },
 } as const;
