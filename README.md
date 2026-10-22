@@ -101,8 +101,3 @@ SITE_URL=https://les-ziggles.github.io BASE_PATH=/website bun run verify
 To serve the site from `ziggles.fr`, add it as a custom domain in the repository's Pages settings and point the domain's DNS to GitHub Pages. The workflow then builds for the domain root, and setting `SITE_INDEXING` to `true` lets search engines index it.
 
 GitHub Pages cannot send custom HTTP headers, so the Content Security Policy relies on the `<meta>` tag Astro generates in each page (it cannot include `frame-ancestors`).
-
-## Before going live
-
-- Check the licence of the Alley-Oop font (`src/assets/fonts/alley-oop-regular.woff2`) for web use: the file carries no author or licence information.
-- The federation PDF guide linked from the registration guide is still hosted on the old WordPress site (`licenceGuidePdfUrl` in `src/site.config.ts`); copy it to `public/` if that site is closed.

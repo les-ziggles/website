@@ -1,7 +1,7 @@
 // Club-wide facts used across pages, structured data and metadata.
 // Update here first: nothing below is duplicated elsewhere in the code.
 
-import { DEPLOY } from './deploy.config';
+import { DEPLOY, withBase } from './deploy.config';
 
 export const SITE = {
   /** Origin of the published site (see src/deploy.config.ts). */
@@ -56,7 +56,8 @@ export const SITE = {
     },
   },
   medicalCertificateTemplateUrl: 'https://drive.google.com/file/d/1tmLvBe0vjNGHD9QcqwqrVqLmoJWBDOgi/view',
-  licenceGuidePdfUrl: 'https://zigglessite.wordpress.com/wp-content/uploads/2024/08/demande-de-licence-mon-espace-licencie.pdf',
+  /** The federation's licence request guide, served from public/documents/. */
+  licenceGuidePdfUrl: withBase('/documents/guide-demande-licence-fffd.pdf'),
   introVideo: {
     youtubeId: '6MKa0auCino',
     /** Anchor of the video on the home page ("Découvrir l’Ultimate" button of the hero). */
