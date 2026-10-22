@@ -1,0 +1,57 @@
+---
+// One dated step of a <Timeline>.
+interface Props {
+  /** When it happened, as written (e.g. "Été 2003"). */
+  date: string;
+  title: string;
+}
+
+const { date, title } = Astro.props;
+---
+
+<li class="timeline-entry">
+  <p class="timeline-entry__date">{date}</p>
+  <h2 class="timeline-entry__title">{title}</h2>
+  <div class="timeline-entry__text"><slot /></div>
+</li>
+
+<style>
+  .timeline-entry {
+    position: relative;
+    padding-bottom: var(--space-l);
+  }
+
+  .timeline-entry:last-child {
+    padding-bottom: 0;
+  }
+
+  .timeline-entry::before {
+    content: '';
+    position: absolute;
+    top: 0.3rem;
+    left: calc(-1 * var(--space-l) + 0.05rem);
+    width: 0.75rem;
+    height: 0.75rem;
+    border: 2px solid var(--ziggles-gold);
+    border-radius: 50%;
+    background: var(--ziggles-red);
+  }
+
+  .timeline-entry__date {
+    margin: 0;
+    font-size: var(--font-size-small);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ziggles-red);
+  }
+
+  .timeline-entry__title {
+    margin-block: var(--space-2xs) var(--space-xs);
+    font-size: 1.4rem;
+  }
+
+  .timeline-entry__text > :global(* + *) {
+    margin-top: var(--space-s);
+  }
+</style>

@@ -6,7 +6,8 @@ import { pathFor, type RouteKey } from '../../i18n/routes';
 
 interface Props {
   title: string;
-  icon: IconName;
+  /** Small pictogram in a round badge. */
+  icon?: IconName;
   to: RouteKey;
   /** Short line above the title (e.g. a weekday). */
   eyebrow?: string;
@@ -19,7 +20,11 @@ const locale = resolveLocale(Astro.currentLocale);
 ---
 
 <li class="feature-card" id={id}>
-  <span class="feature-card__icon"><Icon name={icon} size={26} /></span>
+  {icon && (
+    <span class="feature-card__icon">
+      <Icon name={icon} size={26} />
+    </span>
+  )}
   {eyebrow && <p class="feature-card__eyebrow">{eyebrow}</p>}
   <h3 class="feature-card__title">
     <a class="feature-card__link" href={pathFor(to, locale)}>{title}</a>

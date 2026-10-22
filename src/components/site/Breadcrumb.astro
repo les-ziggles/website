@@ -1,8 +1,8 @@
 ---
-// "Home › Page" trail shown above inner page titles (mirrors the BreadcrumbList structured data).
+// "Home › Page" or "Home › Parent › Subpage" trail shown above inner page titles (mirrors the BreadcrumbList structured data).
 import type { Locale } from '../../i18n/locales';
-import { pathFor, type RouteKey } from '../../i18n/routes';
-import { useTranslations } from '../../i18n/ui';
+import { PARENT_ROUTES, pathFor, type RouteKey } from '../../i18n/routes';
+import { navLabel, useTranslations } from '../../i18n/ui';
 
 interface Props {
   locale: Locale;
@@ -12,11 +12,19 @@ interface Props {
 
 const { locale, routeKey, current } = Astro.props;
 const t = useTranslations(locale);
+const parent = PARENT_ROUTES[routeKey];
 ---
 
 <nav class="breadcrumb" aria-label={t('a11y.breadcrumb')}>
   <ol class="breadcrumb__list">
     <li><a href={pathFor('home', locale)}>{t('nav.home')}</a></li>
+    {
+      parent && (
+        <li>
+          <a href={pathFor(parent, locale)}>{t(navLabel(parent))}</a>
+        </li>
+      )
+    }
     <li><a href={pathFor(routeKey, locale)} aria-current="page">{current}</a></li>
   </ol>
 </nav>

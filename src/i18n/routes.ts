@@ -4,7 +4,8 @@
 // src/content/pages/<locale>/<key>.mdx and its URL is built from the slug below.
 // French slugs keep the paths of the former WordPress site.
 //
-// To add a page: add a key here, then one MDX file per locale.
+// To add a page: add a key here, then one MDX file per locale. A subpage's slug
+// starts with its parent's slug, and the parent is declared in PARENT_ROUTES.
 // Used by the page routes, the language switcher, hreflang links and the sitemap.
 
 import { DEFAULT_LOCALE, LOCALES, type Locale } from './locales';
@@ -12,6 +13,10 @@ import { withBase } from '../deploy.config';
 
 export const ROUTES = {
   home: { fr: '', en: '' },
+  club: { fr: 'le-club', en: 'the-club' },
+  'club-history': { fr: 'le-club/histoire', en: 'the-club/history' },
+  'club-faces': { fr: 'le-club/trombinoscope', en: 'the-club/faces' },
+  'club-board': { fr: 'le-club/bureau', en: 'the-club/board' },
   association: { fr: 'lassociation', en: 'association' },
   trainings: { fr: 'entrainements', en: 'trainings' },
   membership: { fr: 'inscriptions', en: 'membership' },
@@ -23,6 +28,13 @@ export const ROUTES = {
 
 export type RouteKey = keyof typeof ROUTES;
 export const ROUTE_KEYS = Object.keys(ROUTES) as RouteKey[];
+
+/** Subpages and the page they belong to, shown between home and the subpage in the breadcrumb. */
+export const PARENT_ROUTES: Partial<Record<RouteKey, RouteKey>> = {
+  'club-history': 'club',
+  'club-faces': 'club',
+  'club-board': 'club',
+};
 
 export const isRouteKey = (value: string): value is RouteKey => value in ROUTES;
 

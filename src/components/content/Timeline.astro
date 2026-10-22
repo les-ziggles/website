@@ -1,0 +1,27 @@
+---
+// Vertical timeline of <TimelineEntry> items, e.g. the club history.
+---
+
+<ol class="timeline" role="list">
+  <slot />
+</ol>
+
+<style>
+  .timeline {
+    position: relative;
+    margin-block: var(--space-l);
+    padding: 0 0 0 var(--space-l);
+    list-style: none;
+  }
+
+  /* The line joining the dots. */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    left: 0.4rem;
+    width: 2px;
+    background: color-mix(in oklab, var(--ziggles-gold), transparent 40%);
+  }
+</style>

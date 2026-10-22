@@ -29,6 +29,8 @@ const pages = defineCollection({
         title: z.string().min(20).max(65, 'Keep SEO titles under 65 characters so they are not truncated in results'),
         description: z.string().min(70).max(165, 'Keep meta descriptions under 165 characters'),
       }),
+      /** Illustration shown beside the page title, e.g. an eagle head on the club subpages. */
+      emblem: image().optional(),
       /** Image shown at the top of the page and used for social cards. */
       cover: z
         .object({

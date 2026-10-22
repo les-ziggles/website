@@ -10,6 +10,11 @@ import FeatureGrid from './FeatureGrid.astro';
 import MediaSplit from './MediaSplit.astro';
 import PartnerLogo from './PartnerLogo.astro';
 import PriceList from './PriceList.astro';
+import TeamGrid from './TeamGrid.astro';
+import TeamMember from './TeamMember.astro';
+import Timeline from './Timeline.astro';
+import TimelineEntry from './TimelineEntry.astro';
+import TimelineGap from './TimelineGap.astro';
 import TrainingSchedule from './TrainingSchedule.astro';
 import TrialBanner from './TrialBanner.astro';
 import VideoFacade from './VideoFacade.astro';
@@ -26,6 +31,11 @@ export const mdxComponents = {
   MediaSplit,
   PartnerLogo,
   PriceList,
+  TeamGrid,
+  TeamMember,
+  Timeline,
+  TimelineEntry,
+  TimelineGap,
   TrainingSchedule,
   TrialBanner,
   VideoFacade,

@@ -1,0 +1,18 @@
+---
+// Responsive grid of <TeamMember> cards, e.g. the board.
+---
+
+<ul class="team-grid" role="list">
+  <slot />
+</ul>
+
+<style>
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(18.5rem, 100%), 1fr));
+    gap: var(--space-m);
+    margin-block: var(--space-l);
+    padding: 0;
+    list-style: none;
+  }
+</style>

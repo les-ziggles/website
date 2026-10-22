@@ -19,7 +19,7 @@ interface Props {
 }
 
 const { page, routeKey, locale } = Astro.props;
-const { title, lede, seo, cover } = page.data;
+const { title, lede, seo, cover, emblem } = page.data;
 const { Content } = await render(page);
 
 const isHome = routeKey === 'home';
@@ -46,7 +46,7 @@ if (routeKey === 'membership') structuredData.push(await membershipOffers(locale
       </>
     ) : (
       <>
-        <PageHeader locale={locale} routeKey={routeKey} title={title} lede={lede} cover={cover} />
+        <PageHeader locale={locale} routeKey={routeKey} title={title} lede={lede} cover={cover} emblem={emblem} />
         <div class="content-page__body page-width">
           <Prose>
             <Content components={mdxComponents} />

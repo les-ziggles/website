@@ -17,9 +17,14 @@ const fr = {
   'a11y.newTab': '(nouvel onglet)',
   'a11y.logoAnimated': 'Écusson des Ziggles : un aigle rouge lance un frisbee au-dessus des vagues, sous les montagnes',
   'nav.home': 'Accueil',
+  'nav.club': 'Le club',
+  'nav.club-history': 'L’histoire du club',
+  'nav.club-faces': 'Le trombi',
+  'nav.club-board': 'Le bureau',
   'nav.association': 'L’association',
   'nav.trainings': 'Entraînements',
   'nav.membership': 'Informations inscription',
+  'nav.membership.short': 'Inscriptions',
   'nav.registration-guide': 'Inscription en ligne',
   'nav.disc-golf': 'Disc Golf',
   'nav.contact': 'Contact',
@@ -83,9 +88,14 @@ const en: Record<UiKey, string> = {
   'a11y.newTab': '(new tab)',
   'a11y.logoAnimated': 'Les Ziggles crest: a red eagle throws a frisbee above the waves, below the mountains',
   'nav.home': 'Home',
+  'nav.club': 'The club',
+  'nav.club-history': 'Club history',
+  'nav.club-faces': 'Who’s who',
+  'nav.club-board': 'The board',
   'nav.association': 'The association',
   'nav.trainings': 'Trainings',
   'nav.membership': 'Membership',
+  'nav.membership.short': 'Membership',
   'nav.registration-guide': 'Online registration',
   'nav.disc-golf': 'Disc Golf',
   'nav.contact': 'Contact',
@@ -140,7 +150,11 @@ export const useTranslations = (locale: Locale) => (key: UiKey) => strings[local
 
 export const navLabel = (key: RouteKey): UiKey => `nav.${key}` as UiKey;
 
+/** Shorter labels used in the header, where space is tight. */
+const SHORT_NAV_LABELS: Partial<Record<RouteKey, UiKey>> = { membership: 'nav.membership.short' };
+export const shortNavLabel = (key: RouteKey): UiKey => SHORT_NAV_LABELS[key] ?? navLabel(key);
+
 /** Pages listed in the header, in order. */
-export const MAIN_NAV: RouteKey[] = ['trainings', 'membership', 'disc-golf', 'contact'];
+export const MAIN_NAV: RouteKey[] = ['trainings', 'membership', 'disc-golf', 'club', 'contact'];
 /** Pages listed in the footer, in order. */
-export const FOOTER_NAV: RouteKey[] = ['association', 'trainings', 'membership', 'registration-guide', 'disc-golf', 'contact', 'legal-notice'];
+export const FOOTER_NAV: RouteKey[] = ['club', 'association', 'trainings', 'membership', 'registration-guide', 'disc-golf', 'contact', 'legal-notice'];

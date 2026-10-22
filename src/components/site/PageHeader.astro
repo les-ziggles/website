@@ -1,5 +1,5 @@
 ---
-// Top of inner pages: breadcrumb, title, introduction and optional cover image.
+// Top of inner pages: breadcrumb, title, introduction and optional cover image or emblem.
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
 import Breadcrumb from './Breadcrumb.astro';
@@ -12,12 +12,14 @@ interface Props {
   title: string;
   lede?: string;
   cover?: { image: ImageMetadata; alt: string };
+  /** Decorative illustration beside the title, used when there is no cover. */
+  emblem?: ImageMetadata;
 }
 
-const { locale, routeKey, title, lede, cover } = Astro.props;
+const { locale, routeKey, title, lede, cover, emblem } = Astro.props;
 ---
 
-<header class:list={['page-header', 'on-dark', { 'page-header--with-cover': cover }]}>
+<header class:list={['page-header', 'on-dark', { 'page-header--with-cover': cover, 'page-header--with-emblem': emblem && !cover }]}>
   <div class="page-header__inner page-width">
     <div class="page-header__text">
       <Breadcrumb locale={locale} routeKey={routeKey} current={title} />
@@ -29,6 +31,7 @@ const { locale, routeKey, title, lede, cover } = Astro.props;
         <Image class="page-header__cover" src={cover.image} alt={cover.alt} width={560} densities={[1.5, 2]} loading="eager" fetchpriority="high" />
       )
     }
+    {emblem && !cover && <Image class="page-header__emblem" src={emblem} alt="" width={176} loading="eager" />}
   </div>
 </header>
 
@@ -63,6 +66,25 @@ const { locale, routeKey, title, lede, cover } = Astro.props;
     object-fit: cover;
     border-radius: var(--radius-l);
     box-shadow: 0 20px 40px rgb(0 0 0 / 0.3);
+  }
+
+  /* Narrow screens: the emblem sits above the text rather than squeezing it. */
+  .page-header__emblem {
+    order: -1;
+    width: 4.5rem;
+    height: auto;
+  }
+
+  @media (min-width: 40rem) {
+    .page-header--with-emblem .page-header__inner {
+      grid-template-columns: 1fr auto;
+      align-items: start;
+    }
+
+    .page-header__emblem {
+      order: 0;
+      width: clamp(6rem, 16vw, 11rem);
+    }
   }
 
   @media (min-width: 56rem) {

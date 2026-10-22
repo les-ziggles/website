@@ -3,8 +3,8 @@
 import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import { SITE } from '../site.config';
 import { LOCALES, LOCALE_META, type Locale } from '../i18n/locales';
-import { useTranslations } from '../i18n/ui';
-import { type RouteKey } from '../i18n/routes';
+import { navLabel, useTranslations } from '../i18n/ui';
+import { PARENT_ROUTES, type RouteKey } from '../i18n/routes';
 import { canonicalUrl, publicUrl } from './urls';
 
 type JsonLd = Record<string, unknown>;
@@ -70,12 +70,15 @@ export function webPage(key: RouteKey, locale: Locale, name: string, description
 
 export function breadcrumb(key: RouteKey, locale: Locale, name: string): JsonLd {
   const t = useTranslations(locale);
+  const parent = PARENT_ROUTES[key];
+  const trail = [
+    { name: t('nav.home'), item: canonicalUrl('home', locale) },
+    ...(parent ? [{ name: t(navLabel(parent)), item: canonicalUrl(parent, locale) }] : []),
+    { name, item: canonicalUrl(key, locale) },
+  ];
   return {
     '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: t('nav.home'), item: canonicalUrl('home', locale) },
-      { '@type': 'ListItem', position: 2, name, item: canonicalUrl(key, locale) },
-    ],
+    itemListElement: trail.map((step, index) => ({ '@type': 'ListItem', position: index + 1, ...step })),
   };
 }
 

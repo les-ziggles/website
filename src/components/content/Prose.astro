@@ -29,12 +29,13 @@
     margin-top: var(--space-l);
   }
 
-  .prose :global(ul),
-  .prose :global(ol) {
+  /* Text lists only: components such as card grids and timelines are lists with role="list" and their own layout. */
+  .prose :global(ul:not([role='list'])),
+  .prose :global(ol:not([role='list'])) {
     padding-left: 1.3em;
   }
 
-  .prose :global(li + li),
+  .prose :global(:not([role='list']) > li + li),
   .prose :global(li > ul) {
     margin-top: var(--space-2xs);
   }
@@ -53,7 +54,8 @@
 
   /* Wide components may use the full page width. */
   .prose > :global(.training-schedule),
-  .prose > :global(.feature-grid) {
+  .prose > :global(.feature-grid),
+  .prose > :global(.team-grid) {
     max-width: var(--page-width);
     width: min(var(--page-width), calc(100vw - 2 * var(--page-gutter)));
   }

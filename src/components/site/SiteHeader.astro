@@ -5,8 +5,8 @@ import BrandMark from '../brand/BrandMark.astro';
 import Icon from '../ui/Icon.astro';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import type { Locale } from '../../i18n/locales';
-import { pathFor, type RouteKey } from '../../i18n/routes';
-import { MAIN_NAV, navLabel, useTranslations } from '../../i18n/ui';
+import { PARENT_ROUTES, pathFor, type RouteKey } from '../../i18n/routes';
+import { MAIN_NAV, shortNavLabel, useTranslations } from '../../i18n/ui';
 
 interface Props {
   locale: Locale;
@@ -15,6 +15,8 @@ interface Props {
 
 const { locale, routeKey } = Astro.props;
 const t = useTranslations(locale);
+/** "page" on the current page, "true" on the parent of a subpage. */
+const current = (key: RouteKey) => (key === routeKey ? 'page' : routeKey && PARENT_ROUTES[routeKey] === key ? 'true' : undefined);
 ---
 
 <header class="site-header on-dark">
@@ -37,8 +39,8 @@ const t = useTranslations(locale);
           {
             MAIN_NAV.map((key) => (
               <li>
-                <a class="site-menu__link" href={pathFor(key, locale)} aria-current={key === routeKey ? 'page' : undefined}>
-                  {t(navLabel(key))}
+                <a class="site-menu__link" href={pathFor(key, locale)} aria-current={current(key)}>
+                  {t(shortNavLabel(key))}
                 </a>
               </li>
             ))
@@ -151,11 +153,11 @@ const t = useTranslations(locale);
   }
 
   .site-menu__link:hover,
-  .site-menu__link[aria-current='page'] {
+  .site-menu__link[aria-current] {
     color: var(--ziggles-gold);
   }
 
-  .site-menu__link[aria-current='page'] {
+  .site-menu__link[aria-current] {
     border-bottom-color: var(--ziggles-gold);
   }
 

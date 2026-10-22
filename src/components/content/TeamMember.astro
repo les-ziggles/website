@@ -1,0 +1,44 @@
+---
+// One person (or pair) of a <TeamGrid>: role, name and a short description.
+interface Props {
+  role: string;
+  name: string;
+}
+
+const { role, name } = Astro.props;
+---
+
+<li class="team-member">
+  <p class="team-member__role">{role}</p>
+  <h2 class="team-member__name">{name}</h2>
+  <div class="team-member__text"><slot /></div>
+</li>
+
+<style>
+  .team-member {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-l);
+    border-top: 4px solid var(--ziggles-red);
+    border-radius: var(--radius-l);
+    background: var(--ziggles-white);
+    box-shadow: var(--shadow-card);
+  }
+
+  .team-member__role {
+    font-size: var(--font-size-small);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ziggles-red);
+  }
+
+  .team-member__name {
+    font-size: 1.4rem;
+  }
+
+  .team-member__text {
+    color: var(--color-text-muted);
+  }
+</style>

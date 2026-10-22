@@ -1,0 +1,24 @@
+---
+// Dotted stretch of a <Timeline>, to show that many years pass between two entries.
+---
+
+<li class="timeline-gap" aria-hidden="true"></li>
+
+<style>
+  .timeline-gap {
+    position: relative;
+    height: 5rem;
+    margin-bottom: var(--space-l);
+  }
+
+  /* Drawn over the timeline's solid line, at the same place and width. */
+  .timeline-gap::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(-1 * var(--space-l) + 0.4rem);
+    width: 2px;
+    background: repeating-linear-gradient(to bottom, var(--ziggles-gold) 0 3px, var(--color-page) 3px 9px);
+  }
+</style>
