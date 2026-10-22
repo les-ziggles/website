@@ -13,9 +13,11 @@ interface Props {
   eyebrow?: string;
   /** Anchor, so another part of the page can link to this card. */
   id?: string;
+  /** Call to action at the bottom of the card (e.g. "Lire l’histoire"), with an arrow, to show the card is a link. */
+  action?: string;
 }
 
-const { title, icon, to, eyebrow, id } = Astro.props;
+const { title, icon, to, eyebrow, id, action } = Astro.props;
 const locale = resolveLocale(Astro.currentLocale);
 ---
 
@@ -30,6 +32,14 @@ const locale = resolveLocale(Astro.currentLocale);
     <a class="feature-card__link" href={pathFor(to, locale)}>{title}</a>
   </h3>
   <div class="feature-card__text"><slot /></div>
+  {
+    action && (
+      <p class="feature-card__action" aria-hidden="true">
+        {action}
+        <Icon name="arrow-right" size={18} />
+      </p>
+    )
+  }
 </li>
 
 <style>
@@ -102,5 +112,42 @@ const locale = resolveLocale(Astro.currentLocale);
 
   .feature-card__text {
     color: var(--color-text-muted);
+  }
+
+  /* Pushed to the bottom so the actions of a row line up. */
+  .feature-card__action {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    margin-top: auto;
+    padding-top: var(--space-s);
+    font-weight: 700;
+    color: var(--ziggles-red);
+  }
+
+  .feature-card__action :global(.icon) {
+    transition: transform var(--transition-fast);
+  }
+
+  .feature-card:hover .feature-card__title,
+  .feature-card:has(.feature-card__link:focus-visible) .feature-card__title {
+    color: var(--ziggles-red);
+  }
+
+  .feature-card:hover .feature-card__action,
+  .feature-card:has(.feature-card__link:focus-visible) .feature-card__action {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .feature-card:hover .feature-card__action :global(.icon),
+  .feature-card:has(.feature-card__link:focus-visible) .feature-card__action :global(.icon) {
+    transform: translateX(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .feature-card__action :global(.icon) {
+      transition: none;
+    }
   }
 </style>
