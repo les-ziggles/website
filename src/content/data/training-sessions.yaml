@@ -1,4 +1,5 @@
-# Weekly sessions for the 2026-2027 season. Update times, venues and restart dates each season.
+# Weekly Ultimate sessions for the 2026-2027 season. Disc Golf has no fixed slot: members organise their own sessions.
+# Update times, venues and restart dates each season.
 # weekday: 1 = Monday … 7 = Sunday. venue: an id from venues.yaml.
 
 - id: ultimate-indoor-tuesday
@@ -55,28 +56,3 @@
   field: { fr: "Terrain synthétique", en: "Artificial turf pitch" }
   shoes: { fr: "Crampons", en: "Studded boots" }
   resumesOn: 2026-09-20
-
-- id: disc-golf-monday
-  discipline: disc-golf
-  setting: outdoor
-  title: { fr: "Technique sur corbeille", en: "Basket technique" }
-  audience: { fr: "Membres de la section Disc Golf", en: "Disc Golf section members" }
-  weekday: 1
-  start: "12:15"
-  end: "13:30"
-  venue: foret-de-la-valmasque
-  note:
-    fr: Travail technique sur corbeille, espace ouvert ou quelques trous à thème.
-    en: Technique on the basket, open field work or a few themed holes.
-
-- id: disc-golf-sunday
-  discipline: disc-golf
-  setting: outdoor
-  title: { fr: "Parcours de Vaugrenier", en: "Vaugrenier course" }
-  audience: { fr: "Membres de la section Disc Golf", en: "Disc Golf section members" }
-  weekday: 7
-  start: "16:30"
-  venue: parc-de-vaugrenier
-  note:
-    fr: Le 18 trous ou des sections plus ciblées, avant de rejoindre l’Ultimate à Biot.
-    en: The 18-hole course or targeted sections, before joining the Ultimate session in Biot.
