@@ -18,7 +18,9 @@ for (const file of process.argv.slice(2)) {
     .replace(/(\d) €/g, `$1${NNBSP}€`)
     .replace(/(\d) h (\d)/g, `$1${NNBSP}h${NNBSP}$2`)
     // Keep JS/MDX syntax intact: object literals and JSX comments use ": " without a leading space.
-    .replace(new RegExp(`(\\w)${NNBSP}\\?\\.`, 'g'), '$1 ?.');
+    .replace(new RegExp(`(\\w)${NNBSP}\\?\\.`, 'g'), '$1 ?.')
+    // Nor the nullish coalescing operator: "a ?? b".
+    .replace(new RegExp(`${NNBSP}\\?\\?`, 'g'), ' ??');
   if (fixed !== text) {
     writeFileSync(file, fixed);
     console.log(`fixed ${file}`);
