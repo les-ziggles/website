@@ -1,0 +1,129 @@
+---
+// Horizontal row of local authority and partner logos with balanced optical sizing.
+import { Image } from 'astro:assets';
+import departementAlpesMaritimes from '../../assets/images/partners/partner-departement-alpes-maritimes.svg';
+import antibesJuanLesPins from '../../assets/images/partners/partner-antibes-juan-les-pins.png';
+import brasserieALaFut from '../../assets/images/partners/partner-brasserie-a-la-fut.png';
+import brasserieCraftazur from '../../assets/images/partners/partner-brasserie-craftazur.png';
+
+const SUPPORTERS = [
+  {
+    id: 'departement-alpes-maritimes',
+    src: departementAlpesMaritimes,
+    alt: 'Département des Alpes-Maritimes',
+    href: 'https://www.departement06.fr/',
+    width: 240,
+    modifier: 'dept06',
+  },
+  {
+    id: 'antibes-juan-les-pins',
+    src: antibesJuanLesPins,
+    alt: 'Ville d’Antibes Juan-les-Pins',
+    href: 'https://www.antibes-juanlespins.com/',
+    width: 220,
+    modifier: 'antibes',
+  },
+  {
+    id: 'brasserie-a-la-fut',
+    src: brasserieALaFut,
+    alt: 'Brasserie À la Fût',
+    href: 'https://www.alafut.fr/',
+    width: 90,
+    modifier: 'alafut',
+  },
+  {
+    id: 'brasserie-craftazur',
+    src: brasserieCraftazur,
+    alt: 'Brasserie Craftazur',
+    href: 'https://craftazur.fr/',
+    width: 120,
+    modifier: 'craftazur',
+  },
+] as const;
+---
+
+<ul class="partner-row" role="list">
+  {
+    SUPPORTERS.map(({ src, alt, href, width, modifier }) => (
+      <li class="partner-row__item">
+        <a class="partner-row__link" href={href} rel="noopener">
+          <Image
+            class:list={['partner-row__logo', `partner-row__logo--${modifier}`]}
+            src={src}
+            alt={alt}
+            width={Math.min(width, src.width)}
+            densities={src.format === 'svg' ? undefined : [1.5, 2]}
+            loading="lazy"
+          />
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .partner-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    justify-items: center;
+    gap: var(--space-l) var(--space-m);
+    margin-top: var(--space-xl);
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 48rem) {
+    .partner-row {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-l) var(--space-xl);
+    }
+  }
+
+  .partner-row__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .partner-row__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    padding: var(--space-xs);
+    border-radius: var(--radius-m);
+    transition:
+      transform var(--transition-fast),
+      opacity var(--transition-fast);
+  }
+
+  .partner-row__link:hover {
+    transform: translateY(-2px);
+    opacity: 0.85;
+  }
+
+  .partner-row__logo {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+  }
+
+  .partner-row__logo--dept06 {
+    max-height: clamp(2.75rem, 2.2rem + 1.4vw, 3.75rem);
+  }
+
+  .partner-row__logo--antibes {
+    max-height: clamp(3rem, 2.4rem + 1.6vw, 4.125rem);
+  }
+
+  .partner-row__logo--alafut {
+    max-height: clamp(5rem, 4rem + 2.5vw, 6.75rem);
+  }
+
+  .partner-row__logo--craftazur {
+    max-height: clamp(4.75rem, 3.8rem + 2.3vw, 6.25rem);
+  }
+</style>

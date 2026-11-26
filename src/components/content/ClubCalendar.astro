@@ -342,6 +342,11 @@ const popoverId = (month: string, day: string) => `calendar-${month}-day-${day}`
     background: var(--color-page);
   }
 
+  :global(.band--sand) .calendar-source {
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+  }
+
   .calendar-source__toggle {
     display: flex;
     align-items: center;

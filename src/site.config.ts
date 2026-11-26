@@ -55,6 +55,12 @@ export const SITE = {
       ics: 'https://ziggles.yaentrainement.fr/calendar/ical',
     },
   },
+  /**
+   * Public Behold JSON feed mirroring the latest posts of @ziggles06. Read at build time
+   * (the site is rebuilt every night) and its images are re-hosted locally so visitors
+   * never contact third-party servers.
+   */
+  instagramFeedUrl: 'https://feeds.behold.so/EOCEQ7RqNYdYqZydI7hP',
   medicalCertificateTemplateUrl: 'https://drive.google.com/file/d/1tmLvBe0vjNGHD9QcqwqrVqLmoJWBDOgi/view',
   /** The federation's licence request guide, served from public/documents/. */
   licenceGuidePdfUrl: withBase('/documents/guide-demande-licence-fffd.pdf'),

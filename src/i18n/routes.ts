@@ -17,6 +17,7 @@ export const ROUTES = {
   'club-history': { fr: 'le-club/histoire', en: 'the-club/history' },
   'club-faces': { fr: 'le-club/trombinoscope', en: 'the-club/faces' },
   'club-board': { fr: 'le-club/bureau', en: 'the-club/board' },
+  'club-competition': { fr: 'le-club/competition', en: 'the-club/competition' },
   association: { fr: 'lassociation', en: 'association' },
   trainings: { fr: 'entrainements', en: 'trainings' },
   membership: { fr: 'inscriptions', en: 'membership' },
@@ -34,6 +35,7 @@ export const PARENT_ROUTES: Partial<Record<RouteKey, RouteKey>> = {
   'club-history': 'club',
   'club-faces': 'club',
   'club-board': 'club',
+  'club-competition': 'club',
 };
 
 export const isRouteKey = (value: string): value is RouteKey => value in ROUTES;

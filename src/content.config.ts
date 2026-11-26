@@ -12,6 +12,7 @@ import { defineCollection, reference } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { calendarLoader } from './lib/calendar-loader';
+import { instagramLoader } from './lib/instagram-loader';
 import { SITE } from './site.config';
 
 /** A text in both languages. Strict, so an unquoted comma in YAML (`{ fr: a, b, en: c }`) fails the build. */
@@ -99,4 +100,15 @@ const events = defineCollection({
   }),
 });
 
-export const collections = { pages, venues, sessions, prices, events };
+const instagram = defineCollection({
+  loader: instagramLoader(SITE.instagramFeedUrl),
+  schema: z.object({
+    permalink: z.url(),
+    timestamp: z.date(),
+    mediaType: z.enum(['IMAGE', 'VIDEO', 'CAROUSEL_ALBUM']),
+    caption: z.string(),
+    imageBase64: z.string(),
+  }),
+});
+
+export const collections = { pages, venues, sessions, prices, events, instagram };

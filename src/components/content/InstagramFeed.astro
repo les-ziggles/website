@@ -1,0 +1,227 @@
+---
+// Latest @ziggles06 Instagram posts (src/content.config.ts -> instagram), mirrored locally at build time.
+import { getCollection } from 'astro:content';
+import ButtonLink from './ButtonLink.astro';
+import Icon from '../ui/Icon.astro';
+import { withBase } from '../../deploy.config';
+import { resolveLocale } from '../../i18n/locales';
+import { useTranslations } from '../../i18n/ui';
+import { formatDate } from '../../lib/format';
+import { SITE } from '../../site.config';
+
+interface Props {
+  limit?: number;
+}
+
+const { limit = 6 } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+
+const posts = (await getCollection('instagram'))
+  .sort((a, b) => b.data.timestamp.getTime() - a.data.timestamp.getTime())
+  .slice(0, limit);
+---
+
+<div class="instagram-feed">
+  {
+    posts.length === 0 ? (
+      <p class="instagram-feed__empty">{t('instagram.empty')}</p>
+    ) : (
+      <ul class="instagram-grid" role="list">
+        {posts.map((post) => {
+          const dateLabel = formatDate(post.data.timestamp, locale);
+          return (
+            <li class="instagram-card">
+              <div class="instagram-card__media">
+                <img
+                  class="instagram-card__image"
+                  src={withBase(`/news/instagram/${post.id}.webp`)}
+                  alt={t('instagram.postAlt').replace('{date}', dateLabel)}
+                  width="640"
+                  height="640"
+                  loading="lazy"
+                  decoding="async"
+                />
+                {post.data.mediaType === 'VIDEO' && (
+                  <span class="instagram-card__badge" aria-label={t('instagram.video')}>
+                    <Icon name="play" size={14} />
+                  </span>
+                )}
+              </div>
+              <div class="instagram-card__body">
+                <time class="instagram-card__date" datetime={post.data.timestamp.toISOString()}>
+                  {dateLabel}
+                </time>
+                {post.data.caption && <p class="instagram-card__caption">{post.data.caption}</p>}
+                <p class="instagram-card__action">
+                  <a class="instagram-card__link" href={post.data.permalink} rel="noopener">
+                    {t('instagram.viewPost')}
+                    <Icon name="external" size={16} />
+                  </a>
+                </p>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    )
+  }
+
+  <div class="instagram-feed__footer">
+    <ButtonLink href={SITE.social.instagram} variant="secondary">
+      {t('instagram.follow')}
+    </ButtonLink>
+  </div>
+</div>
+
+<style>
+  .instagram-feed {
+    margin-top: var(--space-l);
+  }
+
+  .instagram-feed__empty {
+    color: var(--color-text-muted);
+  }
+
+  .instagram-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+    gap: var(--space-l);
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 60rem) {
+    .instagram-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .instagram-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-l);
+    background: var(--ziggles-white);
+    box-shadow: var(--shadow-card);
+    transition:
+      transform var(--transition-fast),
+      box-shadow var(--transition-fast);
+  }
+
+  .instagram-card:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      0 2px 4px rgb(4 12 54 / 0.1),
+      0 16px 32px rgb(4 12 54 / 0.14);
+  }
+
+  .instagram-card:has(.instagram-card__link:focus-visible) {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .instagram-card__media {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--ziggles-sand);
+  }
+
+  .instagram-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 300ms ease;
+  }
+
+  .instagram-card:hover .instagram-card__image {
+    transform: scale(1.03);
+  }
+
+  .instagram-card__badge {
+    position: absolute;
+    top: var(--space-s);
+    right: var(--space-s);
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    background: rgb(4 12 54 / 0.8);
+    color: var(--ziggles-white);
+  }
+
+  .instagram-card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: var(--space-xs);
+    padding: var(--space-m) var(--space-l) var(--space-l);
+  }
+
+  .instagram-card__date {
+    font-size: var(--font-size-small);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ziggles-red);
+  }
+
+  .instagram-card__caption {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+
+  .instagram-card__action {
+    margin-top: auto;
+    padding-top: var(--space-xs);
+  }
+
+  .instagram-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    font-weight: 700;
+    color: var(--ziggles-red);
+    text-decoration: none;
+  }
+
+  /* Whole card is clickable via the card link. */
+  .instagram-card__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .instagram-card__link:focus-visible {
+    outline: none;
+  }
+
+  .instagram-card:hover .instagram-card__link,
+  .instagram-card:has(.instagram-card__link:focus-visible) .instagram-card__link {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .instagram-feed__footer {
+    margin-top: var(--space-l);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .instagram-card__image {
+      transition: none;
+    }
+
+    .instagram-card:hover .instagram-card__image {
+      transform: none;
+    }
+  }
+</style>

@@ -7,8 +7,10 @@ import ClubCalendar from './ClubCalendar.astro';
 import ContentImage from './ContentImage.astro';
 import FeatureCard from './FeatureCard.astro';
 import FeatureGrid from './FeatureGrid.astro';
+import InstagramFeed from './InstagramFeed.astro';
 import MediaSplit from './MediaSplit.astro';
 import PartnerLogo from './PartnerLogo.astro';
+import PartnerRow from './PartnerRow.astro';
 import PriceList from './PriceList.astro';
 import TeamGrid from './TeamGrid.astro';
 import TeamMember from './TeamMember.astro';
@@ -28,8 +30,10 @@ export const mdxComponents = {
   ContentImage,
   FeatureCard,
   FeatureGrid,
+  InstagramFeed,
   MediaSplit,
   PartnerLogo,
+  PartnerRow,
   PriceList,
   TeamGrid,
   TeamMember,
